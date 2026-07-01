@@ -1,0 +1,83 @@
+{
+  "SiteHeader": {
+    "signIn": "Войти",
+    "postListing": "Разместить объявление",
+    "post": "Разместить",
+    "search": "Искать объявления...",
+    "search2": "Отличные цены на телефоны, ноутбуки и многое другое…",
+    "language": "Язык",
+    "theme": "Тема"
+  },
+  "SiteFooter": {
+    "description": "Cheappis — это бесплатная платформа объявлений для покупки и продажи подержанных технологических продуктов на Кипре.",
+    "categories": "Категории",
+    "company": "Компания",
+    "getStarted": "Начать",
+    "rightsReserved": "Все права защищены."
+  },
+  "HomePage": {
+    "heroBadge": "Новый опыт в технологических объявлениях",
+    "heroTitle": "Новая эра подержанных <tech>технологических продуктов</tech> в <country>Кипре</country>",
+    "heroSubtitle": "Откройте для себя удивительные продукты от местных продавцов. Просматривайте широкий ассортимент категорий и находите именно то, что вам нужно, по лучшим ценам.",
+    "popularSearches": "Популярные поисковые запросы",
+    "categories": "Категории",
+    "featuredDeals": "Рекомендуемые предложения",
+    "recentListings": "Последние объявления",
+    "viewAll": "Смотреть все"
+  },
+  "Categories": {
+    "categories": "Категории",
+    "smartphones": "Смартфоны",
+    "tablets": "Планшеты",
+    "laptops": "Ноутбуки",
+    "desktops": "Настольные ПК",
+    "gaming-consoles": "Игровые приставки",
+    "gaming-accessories": "Игровые аксессуары",
+    "pc-components": "Комплектующие для ПК",
+    "wearables": "Носимые устройства"
+  },
+  "SignInPage": {
+    "title": "Войдите в свой аккаунт",
+    "subtitle": "Введите свой email, чтобы войти в аккаунт",
+    "passwordLabel": "Пароль",
+    "forgotPassword": "Забыли пароль?",
+    "loginButton": "Войти",
+    "continueWith": "Или продолжить с",
+    "loginWith": "Войти через",
+    "noAccount": "Нет аккаунта?",
+    "signUp": "Зарегистрироваться",
+    "backToHome": "Назад на главную"
+  },
+  "Listing": {
+    "listing": "{count, plural, =0 {Объявлений не найдено} one {Объявление} other {Объявления}}",
+    "featured": "Рекомендуемое",
+    "free": "Бесплатно",
+    "priceNotAvailable": "Цена недоступна",
+    "priceNegotiable": "Цена договорная",
+    "fullscreen": "Полноэкранный режим",
+    "close": "Закрыть",
+    "description": "Описание",
+    "descriptionNotAvailable": "Продавец не предоставил описание для этого объявления.",
+    "seller": "Продавец",
+    "showPhoneNumber": "Показать номер телефона",
+    "memberSince": "Член с {relativeTime}",
+    "messageSeller": "Отправить сообщение продавцу",
+    "callSeller": "Позвонить продавцу",
+    "verifiedSeller": "Проверенный продавец",
+    "basedOnReviews": "{reviews, plural, =0 {Пока нет отзывов} one {На основе 1 отзыва} other {На основе # отзывов}}",
+    "similarListings": "Похожие объявления"
+  },
+  "Pages": {
+    "home": "Главная",
+    "postListing": "Разместить объявление",
+    "signIn": "Войти",
+    "allListings": "Все объявления",
+    "categories": "Категории",
+    "about": "О нас",
+    "contact": "Контакт",
+    "howItWorks": "Как это работает",
+    "faq": "Часто задаваемые вопросы",
+    "privacyPolicy": "Политика конфиденциальности",
+    "termsOfService": "Условия обслуживания"
+  }
+}

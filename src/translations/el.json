@@ -1,0 +1,83 @@
+{
+  "SiteHeader": {
+    "signIn": "Σύνδεση",
+    "postListing": "Δημοσίευση Αγγελίας",
+    "post": "Δημοσίευση",
+    "search": "Ψάξε αγγελίες…",
+    "search2": "Βρες ευκαιρίες σε κινητά, λάπτοπ και άλλα…",
+    "language": "Γλώσσα",
+    "theme": "Θέμα"
+  },
+  "SiteFooter": {
+    "description": "Το Cheappis είναι μια δωρεάν πλατφόρμα αγγελιών για αγορά και πώληση μεταχειρισμένων προϊόντων τεχνολογίας στην Κύπρο.",
+    "categories": "Κατηγορίες",
+    "company": "Εταιρεία",
+    "getStarted": "Ξεκινήστε",
+    "rightsReserved": "Με την επιφύλαξη παντός δικαιώματος."
+  },
+  "HomePage": {
+    "heroBadge": "Η νέα εμπειρία στις αγγελίες τεχνολογίας",
+    "heroTitle": "Η νέα εποχή στα μεταχειρισμένα <tech>προϊόντα τεχνολογίας</tech> στην <country>Κύπρο</country>",
+    "heroSubtitle": "Ανακαλύψτε καταπληκτικά προϊόντα από τοπικούς πωλητές. Περιηγηθείτε σε μια μεγάλη ποικιλία κατηγοριών και βρείτε αυτό που χρειάζεστε στις καλύτερες τιμές.",
+    "popularSearches": "Δημοφιλείς Αναζητήσεις",
+    "categories": "Κατηγορίες",
+    "featuredDeals": "Προτεινόμενες Αγγελίες",
+    "recentListings": "Πρόσφατες Αγγελίες",
+    "viewAll": "Περισσότερα"
+  },
+  "Categories": {
+    "categories": "Κατηγορίες",
+    "smartphones": "Κινητά Τηλέφωνα",
+    "tablets": "Tablets",
+    "laptops": "Laptops",
+    "desktops": "Σταθεροί Υπολογιστές",
+    "gaming-consoles": "Κονσόλες Gaming",
+    "gaming-accessories": "Αξεσουάρ Gaming",
+    "pc-components": "Εξαρτήματα Υπολογιστών",
+    "wearables": "Wearables"
+  },
+  "SignInPage": {
+    "title": "Σύνδεση στον λογαριασμό σας",
+    "subtitle": "Εισάγετε το email σας για να συνδεθείτε",
+    "passwordLabel": "Κωδικός πρόσβασης",
+    "forgotPassword": "Ξεχάσατε τον κωδικό σας;",
+    "loginButton": "Σύνδεση",
+    "continueWith": "Ή συνεχίστε με",
+    "loginWith": "Σύνδεση με",
+    "noAccount": "Δεν έχετε λογαριασμό;",
+    "signUp": "Εγγραφή",
+    "backToHome": "Επιστροφή στην αρχική"
+  },
+  "Listing": {
+    "listing": "{count, plural, =0 {Δεν βρέθηκαν αγγελίες} one {Αγγελία} other {Αγγελίες}}",
+    "featured": "Προτεινόμενο",
+    "free": "Δωρεάν",
+    "priceNotAvailable": "Τιμή μη διαθέσιμη",
+    "priceNegotiable": "Διαπραγματεύσιμη Τιμή",
+    "fullscreen": "Πλήρης οθόνη",
+    "close": "Κλείσιμο",
+    "description": "Περιγραφή",
+    "descriptionNotAvailable": "Ο πωλητής δεν έχει υποβάλει περιγραφή για αυτήν την αγγελία.",
+    "seller": "Πωλητής",
+    "showPhoneNumber": "Εμφάνιση αριθμού τηλεφώνου",
+    "memberSince": "Μέλος {relativeTime}",
+    "messageSeller": "Στείλε μήνυμα στον πωλητή",
+    "callSeller": "Καλέστε τον πωλητή",
+    "verifiedSeller": "Επιβεβαιωμένος Πωλητής",
+    "basedOnReviews": "{reviews, plural, =0 {Δεν υπάρχουν αξιολογήσεις} one {Βασισμένο σε 1 αξιολόγηση} other {Βασισμένο σε # αξιολογήσεις}}",
+    "similarListings": "Παρόμοιες Αγγελίες"
+  },
+  "Pages": {
+    "home": "Αρχική",
+    "postListing": "Δημοσίευση Αγγελίας",
+    "signIn": "Σύνδεση",
+    "allListings": "Όλες οι Αγγελίες",
+    "categories": "Κατηγορίες",
+    "about": "Σχετικά με εμάς",
+    "contact": "Επικοινωνία",
+    "howItWorks": "Πώς Λειτουργεί",
+    "faq": "Συχνές Ερωτήσεις",
+    "privacyPolicy": "Πολιτική Απορρήτου",
+    "termsOfService": "Όροι Υπηρεσίας"
+  }
+}

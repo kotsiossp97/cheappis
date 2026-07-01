@@ -1,0 +1,83 @@
+{
+  "SiteHeader": {
+    "signIn": "Sign in",
+    "postListing": "Post a listing",
+    "post": "Post",
+    "search": "Search listings...",
+    "search2": "Find great deals on phones, laptops, and more…",
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "SiteFooter": {
+    "description": "Cheappis is a free marketplace for buying and selling used tech products in Cyprus.",
+    "categories": "Categories",
+    "company": "Company",
+    "getStarted": "Get Started",
+    "rightsReserved": "All rights reserved."
+  },
+  "HomePage": {
+    "heroBadge": "The new experience in tech classifieds",
+    "heroTitle": "The new era of used <tech>tech products</tech> in <country>Cyprus</country>",
+    "heroSubtitle": "Discover amazing products from local sellers. Browse a wide range of categories and find exactly what you need at the best prices.",
+    "popularSearches": "Popular Searches",
+    "categories": "Categories",
+    "featuredDeals": "Featured Deals",
+    "recentListings": "Recent Listings",
+    "viewAll": "View all"
+  },
+  "Categories": {
+    "categories": "Categories",
+    "smartphones": "Smartphones",
+    "tablets": "Tablets",
+    "laptops": "Laptops",
+    "desktops": "Desktops",
+    "gaming-consoles": "Gaming Consoles",
+    "gaming-accessories": "Gaming Accessories",
+    "pc-components": "PC Components",
+    "wearables": "Wearables"
+  },
+  "SignInPage": {
+    "title": "Login to your account",
+    "subtitle": "Enter your email below to login to your account",
+    "passwordLabel": "Password",
+    "forgotPassword": "Forgot your password?",
+    "loginButton": "Login",
+    "continueWith": "Or continue with",
+    "loginWith": "Login with",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "backToHome": "Back to home"
+  },
+  "Listing": {
+    "listing": "{count, plural, =0 {No Listings} one {Listing} other {Listings}}",
+    "featured": "Featured",
+    "free": "Free",
+    "priceNotAvailable": "Price not available",
+    "priceNegotiable": "Price Negotiable",
+    "fullscreen": "Fullscreen",
+    "close": "Close",
+    "description": "Description",
+    "descriptionNotAvailable": "The seller has not provided a description for this listing.",
+    "seller": "Seller",
+    "showPhoneNumber": "Show Phone Number",
+    "memberSince": "Member since {relativeTime}",
+    "messageSeller": "Message Seller",
+    "callSeller": "Call Seller",
+    "verifiedSeller": "Verified Seller",
+    "basedOnReviews": "{reviews, plural, =0 {No reviews yet} one {Based on 1 review} other {Based on # reviews}}",
+    "similarListings": "Similar Listings"
+  },
+  "Pages": {
+    "home": "Home",
+    "postListing": "Post a listing",
+    "signIn": "Sign in",
+    "allListings": "All listings",
+    "categories": "Categories",
+    "about": "About",
+    "contact": "Contact",
+    "howItWorks": "How it works",
+    "faq": "FAQ",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  }
+}
