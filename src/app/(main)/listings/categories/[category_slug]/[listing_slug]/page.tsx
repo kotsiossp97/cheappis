@@ -4,8 +4,8 @@ import ListingDetails from "@/components/listings/listing-details";
 import SimilarListings from "@/components/listings/similar-listings";
 import ImageCarousel from "@/components/reusable/image-carousel";
 import { Separator } from "@/components/ui/separator";
-import { DUMMY_DATA } from "@/lib/dummy_data";
-import { type Listing } from "@/lib/types/listing";
+import { api } from "@/trpc/server";
+import { notFound } from "next/navigation";
 
 export default async function ListingPage({
   params,
@@ -14,13 +14,20 @@ export default async function ListingPage({
 }) {
   const { category_slug, listing_slug } = await params;
 
-  const listing: Listing | undefined = DUMMY_DATA.listings.find(
-    (l) => l.slug === listing_slug,
-  );
+  const listing = await api.listing.getBySlug({
+    categorySlug: category_slug,
+    listingSlug: listing_slug,
+  });
 
   if (!listing) {
-    return <>Not Found</>;
+    notFound();
   }
+
+  const similarListings = await api.listing.getSimilar({
+    categorySlug: category_slug,
+    excludeSlug: listing.slug,
+    limit: 6,
+  });
 
   return (
     <main className="flex flex-1 flex-col">
@@ -46,7 +53,7 @@ export default async function ListingPage({
 
           <Separator className="my-6 md:my-8" />
 
-          <SimilarListings listing={listing} />
+          <SimilarListings listings={similarListings} />
         </div>
       </div>
 

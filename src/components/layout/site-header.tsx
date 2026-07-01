@@ -100,13 +100,13 @@ function SiteHeader() {
                 <Link href="/listings/?featured=true" onClick={closeSheet}>
                   <Button variant="outline" size="lg" className="w-full">
                     <Sparkles />
-                    {tHome("featuredDeals")}
+                    {tHome("featuredDeals", { count: 2 })}
                   </Button>
                 </Link>
                 <Link href="/listings/?sort=recent" onClick={closeSheet}>
                   <Button variant="outline" size="lg" className="w-full">
                     <Clock />
-                    {tHome("recentListings")}
+                    {tHome("recentListings", { count: 2 })}
                   </Button>
                 </Link>
               </div>

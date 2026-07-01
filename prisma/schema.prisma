@@ -15,6 +15,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ListingStatus {
+  DRAFT
+  ACTIVE
+  SOLD
+  EXPIRED
+  ARCHIVED
+}
+
 model Post {
   id        String   @id @default(cuid())
   name      String
@@ -33,14 +46,66 @@ model User {
   email         String
   emailVerified Boolean   @default(false)
   image         String? //@db.Text
+  role          UserRole  @default(USER)
+  phone         String?
+  location      String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
   posts         Post[]
+  listings      Listing[]
 
   @@unique([email])
   @@map("user")
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  icon      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  listings  Listing[]
+
+  @@index([name])
+}
+
+model Listing {
+  id              String        @id @default(cuid())
+  slug            String        @unique
+  title           String
+  description     String?
+  price           Int?
+  isFree          Boolean       @default(false)
+  priceNegotiable Boolean       @default(false)
+  location        String
+  featured        Boolean       @default(false)
+  status          ListingStatus @default(ACTIVE)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  categoryId      String
+  userId          String
+  category        Category      @relation(fields: [categoryId], references: [id])
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images          ListingImage[]
+
+  @@index([categoryId, createdAt])
+  @@index([status, createdAt])
+  @@index([userId, createdAt])
+  @@index([price])
+}
+
+model ListingImage {
+  id        String   @id @default(cuid())
+  url       String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, position])
 }
 
 model Session {

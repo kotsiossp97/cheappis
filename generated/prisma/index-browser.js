@@ -135,8 +135,45 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  role: 'role',
+  phone: 'phone',
+  location: 'location',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  icon: 'icon',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ListingScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  price: 'price',
+  isFree: 'isFree',
+  priceNegotiable: 'priceNegotiable',
+  location: 'location',
+  featured: 'featured',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  categoryId: 'categoryId',
+  userId: 'userId'
+};
+
+exports.Prisma.ListingImageScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  position: 'position',
+  createdAt: 'createdAt',
+  listingId: 'listingId'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
@@ -189,11 +226,25 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.UserRole = exports.$Enums.UserRole = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+};
 
+exports.ListingStatus = exports.$Enums.ListingStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  SOLD: 'SOLD',
+  EXPIRED: 'EXPIRED',
+  ARCHIVED: 'ARCHIVED'
+};
 
 exports.Prisma.ModelName = {
   Post: 'Post',
   User: 'User',
+  Category: 'Category',
+  Listing: 'Listing',
+  ListingImage: 'ListingImage',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification'

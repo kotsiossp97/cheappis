@@ -21,8 +21,8 @@
     "heroSubtitle": "Discover amazing products from local sellers. Browse a wide range of categories and find exactly what you need at the best prices.",
     "popularSearches": "Popular Searches",
     "categories": "Categories",
-    "featuredDeals": "Featured Deals",
-    "recentListings": "Recent Listings",
+    "featuredDeals": "{count, plural, =0 {No featured deals found} one {Featured Deal} other {Featured Deals}}",
+    "recentListings": "{count, plural, =0 {No recent listings found} one {Recent Listing} other {Recent Listings}}",
     "viewAll": "View all"
   },
   "Categories": {
@@ -79,5 +79,93 @@
     "faq": "FAQ",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service"
+  },
+  "NewListingForm": {
+    "page": {
+      "title": "New Listing",
+      "subtitle": "Create a new listing by filling out the form below."
+    },
+    "form": {
+      "card": {
+        "title": "Create Your Listing",
+        "description": "Add clear details and high-quality photos to improve buyer trust."
+      }
+    },
+    "fields": {
+      "title": {
+        "label": "Title",
+        "placeholder": "e.g. iPhone 14 Pro 256GB - Excellent condition"
+      },
+      "category": {
+        "label": "Category",
+        "placeholder": "Select category",
+        "search": "Search"
+      },
+      "location": {
+        "label": "Location",
+        "placeholder": "Nicosia, Limassol, Larnaca..."
+      },
+      "price": {
+        "label": "Price (EUR)",
+        "placeholder": "0"
+      },
+      "options": {
+        "label": "Pricing Options",
+        "free": "Mark as free",
+        "negotiable": "Price negotiable"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Describe condition, accessories, battery health, and reason for selling."
+      }
+    },
+    "checklist": {
+      "title": "Publishing Checklist",
+      "description": "Listings with complete info and clear images convert faster.",
+      "quality": {
+        "title": "Image quality",
+        "body": "Uploaded images are auto-optimized for fast loading and better user experience."
+      },
+      "limit": {
+        "title": "Free plan limit",
+        "body": "You can add up to {max} images."
+      },
+      "primary": {
+        "title": "Primary photo",
+        "body": "The first image appears as the cover in listing cards."
+      }
+    },
+    "images": {
+      "title": "Listing Images",
+      "description": "Upload images and preview each one before publishing.",
+      "counter": "{valid}/{max} valid images",
+      "addButton": "Upload images",
+      "uploading": "Uploading...",
+      "helper": "Supported formats: JPG, PNG, WebP, AVIF. Max {max} images and {maxMb}MB per file.",
+      "emptyState": "No images uploaded yet.",
+      "primary": "Primary",
+      "imageN": "Image {index}",
+      "previewAlt": "Listing preview {index}"
+    },
+    "footer": {
+      "note": "By publishing, you confirm this listing follows marketplace rules.",
+      "submit": "Publish listing",
+      "submitting": "Publishing..."
+    },
+    "errors": {
+      "titleTooShort": "Title must be at least 5 characters.",
+      "titleTooLong": "Title must be at most 120 characters.",
+      "categoryRequired": "Category is required.",
+      "locationRequired": "Location is required.",
+      "locationTooLong": "Location must be at most 120 characters.",
+      "descriptionTooLong": "Description must be at most 5000 characters.",
+      "invalidImageUrl": "Each image must be a valid URL.",
+      "noImagesSelected": "At least one image is required.",
+      "tooManyImages": "Free users can add up to {max} images.",
+      "unsupportedFileType": "Unsupported image type. Use JPG, PNG, WebP, or AVIF.",
+      "fileTooLarge": "Each image must be smaller than {maxMb}MB.",
+      "uploadFailed": "Image upload failed. Please try again.",
+      "invalidPrice": "Price must be a valid number."
+    }
   }
 }

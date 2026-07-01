@@ -2,21 +2,19 @@ import { CategoryGrid } from "@/components/home/category-grid";
 import { Hero } from "@/components/home/hero";
 import ListingCard from "@/components/home/listing-card";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { DUMMY_DATA } from "@/lib/dummy_data";
+import { api } from "@/trpc/server";
 import { ArrowRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { HydrateClient } from "@/trpc/server";
 
-export default function Home() {
-  const t = useTranslations("HomePage");
-  const featured = DUMMY_DATA.listings.filter((listing) => listing.featured);
-  const recent = DUMMY_DATA.listings
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-    .sort((a, b) => (a.featured === b.featured ? 0 : a.featured ? -1 : 1));
+export default async function Home() {
+  const t = await getTranslations("HomePage");
+  const [featured, recent] = await Promise.all([
+    api.listing.getFeatured({ limit: 8 }),
+    api.listing.getRecent({ limit: 8 }),
+  ]);
+
   return (
     <HydrateClient>
       <main>
@@ -48,7 +46,7 @@ export default function Home() {
                 id="featured-heading"
                 className="text-xl font-semibold tracking-tight"
               >
-                {t("featuredDeals")}
+                {t("featuredDeals", { count: 2 })}
               </h2>
               <Link
                 href="/listings/?featured=true"
@@ -59,8 +57,13 @@ export default function Home() {
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {featured.map((ad, i) => (
-                <ListingCard key={`featured-${i}`} listing={ad} />
+              {featured.length === 0 && (
+                <p className="text-muted-foreground col-span-full text-center text-sm">
+                  {t("featuredDeals", { count: 0 })}
+                </p>
+              )}
+              {featured.map((listing) => (
+                <ListingCard key={listing.slug} listing={listing} />
               ))}
             </div>
           </section>
@@ -71,7 +74,7 @@ export default function Home() {
                 id="recent-heading"
                 className="text-xl font-semibold tracking-tight"
               >
-                {t("recentListings")}
+                {t("recentListings", { count: 2 })}
               </h2>
               <Link
                 href="/listings/?sort=recent"
@@ -82,8 +85,13 @@ export default function Home() {
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {recent.slice(0, 8).map((ad) => (
-                <ListingCard key={ad.slug} listing={ad} />
+              {recent.length === 0 && (
+                <p className="text-muted-foreground col-span-full text-center text-sm">
+                  {t("recentListings", { count: 0 })}
+                </p>
+              )}
+              {recent.map((listing) => (
+                <ListingCard key={listing.slug} listing={listing} />
               ))}
             </div>
           </section>
