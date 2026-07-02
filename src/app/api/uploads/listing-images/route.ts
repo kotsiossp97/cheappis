@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { Readable } from "node:stream";
+import { type ReadableStream as NodeReadableStream } from "node:stream/web";
 
 import { NextResponse } from "next/server";
 import sharp from "sharp";
@@ -10,25 +10,42 @@ import {
   MAX_IMAGE_FILE_SIZE_BYTES,
   SUPPORTED_IMAGE_MIME_TYPES,
 } from "@/lib/listing-image-constraints";
-
-export const runtime = "nodejs";
-
-const uploadDirectory = path.join(
-  process.cwd(),
-  "public",
-  "uploads",
-  "listings",
-);
+import BunnyCdn from "@/server/bunny/storage";
+import { db } from "@/server/db";
+import { auth } from "@/server/better-auth";
 
 const jsonError = (status: number, errorKey: string) =>
   NextResponse.json({ errorKey }, { status });
 
 export async function POST(request: Request) {
   try {
-    const requestUrl = new URL(request.url);
-    const baseOrigin = requestUrl.origin;
-
     const formData = await request.formData();
+    const listingIdEntry = formData.get("listingId");
+    const listingId =
+      typeof listingIdEntry === "string" ? listingIdEntry.trim() : "";
+
+    if (!listingId) {
+      return jsonError(400, "errors.uploadFailed");
+    }
+
+    const session = await auth.api.getSession({ headers: request.headers });
+    if (!session?.user?.id) {
+      return jsonError(401, "errors.uploadFailed");
+    }
+
+    const listing = await db.listing.findUnique({
+      where: { id: listingId },
+      select: { userId: true, status: true },
+    });
+
+    if (
+      !listing ||
+      listing.userId !== session.user.id ||
+      listing.status !== "DRAFT"
+    ) {
+      return jsonError(403, "errors.uploadFailed");
+    }
+
     const files = formData
       .getAll("files")
       .filter((entry): entry is File => entry instanceof File);
@@ -40,8 +57,6 @@ export async function POST(request: Request) {
     if (files.length > FREE_PLAN_MAX_IMAGES) {
       return jsonError(400, "errors.tooManyImages");
     }
-
-    await mkdir(uploadDirectory, { recursive: true });
 
     const urls: string[] = [];
 
@@ -66,11 +81,24 @@ export async function POST(request: Request) {
         .toBuffer();
 
       const filename = `${Date.now()}-${randomUUID()}.webp`;
-      const destinationPath = path.join(uploadDirectory, filename);
-      const publicPath = `/uploads/listings/${filename}`;
+      const fileStream = Readable.toWeb(
+        Readable.from(optimizedBuffer),
+      ) as NodeReadableStream<Uint8Array>;
 
-      await writeFile(destinationPath, optimizedBuffer);
-      urls.push(new URL(publicPath, baseOrigin).toString());
+      const result = await BunnyCdn.uploadImage(
+        listingId,
+        filename,
+        fileStream,
+        {
+          contentType: "image/webp",
+        },
+      );
+
+      if (!result.success) {
+        return jsonError(500, "errors.uploadFailed");
+      }
+
+      urls.push(result.url);
     }
 
     return NextResponse.json({ urls });

@@ -101,7 +101,7 @@ export default async function ListingsPage({
               min={0}
               placeholder="Max price"
             />
-            <div className="md:col-span-2 lg:col-span-5 flex items-center gap-3">
+            <div className="flex items-center gap-3 md:col-span-2 lg:col-span-5">
               <button className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white">
                 Apply Filters
               </button>
@@ -124,29 +124,33 @@ export default async function ListingsPage({
 
           {listingsResult.pageCount > 1 && (
             <div className="mt-6 flex items-center justify-center gap-2">
-              {Array.from({ length: listingsResult.pageCount }).map((_, index) => {
-                const nextPage = index + 1;
-                const qp = new URLSearchParams();
-                if (q) qp.set("q", q);
-                if (categorySlug) qp.set("category", categorySlug);
-                if (sort) qp.set("sort", sort);
-                if (asString(params.minPrice)) qp.set("minPrice", asString(params.minPrice)!);
-                if (asString(params.maxPrice)) qp.set("maxPrice", asString(params.maxPrice)!);
-                qp.set("page", String(nextPage));
-                return (
-                  <a
-                    key={nextPage}
-                    href={`/listings?${qp.toString()}`}
-                    className={`rounded-md border px-3 py-1 text-sm ${
-                      nextPage === listingsResult.page
-                        ? "bg-primary text-primary-foreground"
-                        : ""
-                    }`}
-                  >
-                    {nextPage}
-                  </a>
-                );
-              })}
+              {Array.from({ length: listingsResult.pageCount }).map(
+                (_, index) => {
+                  const nextPage = index + 1;
+                  const qp = new URLSearchParams();
+                  if (q) qp.set("q", q);
+                  if (categorySlug) qp.set("category", categorySlug);
+                  if (sort) qp.set("sort", sort);
+                  if (asString(params.minPrice))
+                    qp.set("minPrice", asString(params.minPrice)!);
+                  if (asString(params.maxPrice))
+                    qp.set("maxPrice", asString(params.maxPrice)!);
+                  qp.set("page", String(nextPage));
+                  return (
+                    <a
+                      key={nextPage}
+                      href={`/listings?${qp.toString()}`}
+                      className={`rounded-md border px-3 py-1 text-sm ${
+                        nextPage === listingsResult.page
+                          ? "bg-primary text-primary-foreground"
+                          : ""
+                      }`}
+                    >
+                      {nextPage}
+                    </a>
+                  );
+                },
+              )}
             </div>
           )}
         </div>

@@ -4,7 +4,9 @@ import { DEFAULT_CATEGORIES } from "@/lib/default-categories";
 const ensureDefaultCategories = async (db: {
   category: {
     count: () => Promise<number>;
-    createMany: (args: { data: Array<{ name: string; slug: string; icon?: string }> }) => Promise<unknown>;
+    createMany: (args: {
+      data: Array<{ name: string; slug: string; icon?: string }>;
+    }) => Promise<unknown>;
   };
 }) => {
   const count = await db.category.count();

@@ -26,6 +26,12 @@
     "viewAll": "Περισσότερα"
   },
   "Categories": {
+    "field": {
+      "label": "Κατηγορία",
+      "placeholder": "Επιλέξτε κατηγορία",
+      "search": "Αναζήτηση",
+      "noResults": "Δεν βρέθηκαν αποτελέσματα"
+    },
     "categories": "Κατηγορίες",
     "smartphones": "Κινητά Τηλέφωνα",
     "tablets": "Tablets",
@@ -96,11 +102,6 @@
         "label": "Τίτλος",
         "placeholder": "π.χ. iPhone 14 Pro 256GB - Άριστη κατάσταση"
       },
-      "category": {
-        "label": "Κατηγορία",
-        "placeholder": "Επιλέξτε κατηγορία",
-        "search": "Αναζήτηση"
-      },
       "location": {
         "label": "Τοποθεσία",
         "placeholder": "Λευκωσία, Λεμεσός, Λάρνακα..."
@@ -166,6 +167,18 @@
       "fileTooLarge": "Κάθε εικόνα πρέπει να είναι μικρότερη από {maxMb}MB.",
       "uploadFailed": "Η μεταφόρτωση εικόνας απέτυχε. Προσπαθήστε ξανά.",
       "invalidPrice": "Η τιμή πρέπει να είναι έγκυρος αριθμός."
+    }
+  },
+  "LocationCombobox": {
+    "label": "Τοποθεσία",
+    "placeholder": "Επιλέξτε μια περιοχή",
+    "districts": {
+      "nicosia": "Λευκωσία",
+      "limassol": "Λεμεσός",
+      "larnaca": "Λάρνακα",
+      "paphos": "Πάφος",
+      "famagusta": "Αμμόχωστος",
+      "kyrenia": "Κερύνεια"
     }
   }
 }

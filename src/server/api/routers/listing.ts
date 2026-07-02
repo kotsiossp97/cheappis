@@ -29,6 +29,10 @@ const createListingSchema = z.object({
   price: z.number().int().min(0).nullable().optional(),
   isFree: z.boolean().default(false),
   priceNegotiable: z.boolean().default(false),
+});
+
+const attachListingImagesSchema = z.object({
+  listingId: z.string().trim().min(1),
   imageUrls: z.array(z.string().url()).min(1).max(FREE_PLAN_MAX_IMAGES),
 });
 
@@ -42,6 +46,7 @@ const slugify = (value: string) =>
     .replace(/^-|-$/g, "");
 
 const toListingDto = (listing: {
+  id: string;
   slug: string;
   title: string;
   description: string | null;
@@ -54,6 +59,7 @@ const toListingDto = (listing: {
   category: { slug: string };
   images: Array<{ url: string }>;
 }) => ({
+  id: listing.id,
   slug: listing.slug,
   title: listing.title,
   description: listing.description ?? undefined,
@@ -68,6 +74,7 @@ const toListingDto = (listing: {
 });
 
 const listingSelect = {
+  id: true,
   slug: true,
   title: true,
   description: true,
@@ -95,7 +102,10 @@ const listingSelect = {
 const buildUniqueSlug = async (
   db: {
     listing: {
-      findFirst: (args: { where: { slug: string }; select: { slug: true } }) => Promise<{ slug: string } | null>;
+      findFirst: (args: {
+        where: { slug: string };
+        select: { slug: true };
+      }) => Promise<{ slug: string } | null>;
     };
   },
   title: string,
@@ -104,7 +114,12 @@ const buildUniqueSlug = async (
   let candidate = baseSlug;
   let index = 1;
 
-  while (await db.listing.findFirst({ where: { slug: candidate }, select: { slug: true } })) {
+  while (
+    await db.listing.findFirst({
+      where: { slug: candidate },
+      select: { slug: true },
+    })
+  ) {
     candidate = `${baseSlug}-${index}`;
     index += 1;
   }
@@ -114,7 +129,11 @@ const buildUniqueSlug = async (
 
 export const listingRouter = createTRPCRouter({
   getFeatured: publicProcedure
-    .input(z.object({ limit: z.number().int().min(1).max(24).default(8) }).optional())
+    .input(
+      z
+        .object({ limit: z.number().int().min(1).max(24).default(8) })
+        .optional(),
+    )
     .query(async ({ ctx, input }) => {
       const limit = input?.limit ?? 8;
       const rows = await ctx.db.listing.findMany({
@@ -131,7 +150,11 @@ export const listingRouter = createTRPCRouter({
     }),
 
   getRecent: publicProcedure
-    .input(z.object({ limit: z.number().int().min(1).max(24).default(8) }).optional())
+    .input(
+      z
+        .object({ limit: z.number().int().min(1).max(24).default(8) })
+        .optional(),
+    )
     .query(async ({ ctx, input }) => {
       const limit = input?.limit ?? 8;
       const rows = await ctx.db.listing.findMany({
@@ -307,13 +330,6 @@ export const listingRouter = createTRPCRouter({
         });
       }
 
-      if (input.imageUrls.length > FREE_PLAN_MAX_IMAGES) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: `Free users can upload up to ${FREE_PLAN_MAX_IMAGES} images.`,
-        });
-      }
-
       const slug = await buildUniqueSlug(ctx.db, input.title);
 
       const listing = await ctx.db.listing.create({
@@ -326,18 +342,55 @@ export const listingRouter = createTRPCRouter({
           price: input.isFree ? null : (input.price ?? null),
           isFree: input.isFree,
           priceNegotiable: input.priceNegotiable,
-          status: "ACTIVE",
+          status: "DRAFT",
           userId: ctx.session.user.id,
-          images: {
-            create: input.imageUrls.map((url, index) => ({
-              url,
-              position: index,
-            })),
-          },
         },
         select: listingSelect,
       });
 
       return toListingDto(listing);
+    }),
+
+  attachImages: protectedProcedure
+    .input(attachListingImagesSchema)
+    .mutation(async ({ ctx, input }) => {
+      const listing = await ctx.db.listing.findUnique({
+        where: { id: input.listingId },
+        select: { id: true, userId: true },
+      });
+
+      if (!listing || listing.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Listing not found.",
+        });
+      }
+
+      if (input.imageUrls.length > FREE_PLAN_MAX_IMAGES) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `Free users can upload up to ${FREE_PLAN_MAX_IMAGES} images.`,
+        });
+      }
+
+      const updatedListing = await ctx.db.$transaction(async (tx) => {
+        await tx.listingImage.deleteMany({ where: { listingId: input.listingId } });
+
+        await tx.listingImage.createMany({
+          data: input.imageUrls.map((url, index) => ({
+            listingId: input.listingId,
+            url,
+            position: index,
+          })),
+        });
+
+        return tx.listing.update({
+          where: { id: input.listingId },
+          data: { status: "ACTIVE" },
+          select: listingSelect,
+        });
+      });
+
+      return toListingDto(updatedListing);
     }),
 });

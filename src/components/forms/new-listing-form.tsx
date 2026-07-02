@@ -4,14 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus, Info, Star, Trash2, UploadCloud } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { type ChangeEvent, useMemo, useRef, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 
 import {
   FREE_PLAN_MAX_IMAGES,
   MAX_IMAGE_FILE_SIZE_BYTES,
+  SUPPORTED_IMAGE_MIME_TYPES,
 } from "@/lib/listing-image-constraints";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,24 +34,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxTrigger,
-} from "@/components/ui/combobox";
-
-const isValidHttpUrl = (value: string) => {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-};
+import NewListingChecklist from "@/components/forms/new-listing-checklist";
+import LocationCombobox from "@/components/forms/location-combobox";
+import CategoryCombobox from "@/components/forms/category-combobox";
 
 const createSchema = (t: ReturnType<typeof useTranslations>) =>
   z.object({
@@ -73,13 +59,6 @@ const createSchema = (t: ReturnType<typeof useTranslations>) =>
     price: z.string().trim().optional(),
     isFree: z.boolean(),
     priceNegotiable: z.boolean(),
-    imageUrls: z
-      .array(z.string().trim().url(t("errors.invalidImageUrl")))
-      .min(1, t("errors.noImagesSelected"))
-      .max(
-        FREE_PLAN_MAX_IMAGES,
-        t("errors.tooManyImages", { max: FREE_PLAN_MAX_IMAGES }),
-      ),
   });
 
 type NewListingFormValues = {
@@ -90,28 +69,26 @@ type NewListingFormValues = {
   price?: string;
   isFree: boolean;
   priceNegotiable: boolean;
-  imageUrls: string[];
+};
+
+type SelectedImage = {
+  file: File;
+  previewUrl: string;
 };
 
 export function NewListingForm() {
   const t = useTranslations("NewListingForm");
-  const tCat = useTranslations("Categories");
   const router = useRouter();
-  const categoriesQuery = api.category.list.useQuery();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const schema = useMemo(() => createSchema(t), [t]);
 
-  const createListingMutation = api.listing.create.useMutation({
-    onSuccess: (listing) => {
-      router.push(
-        `/listings/categories/${listing.categorySlug}/${listing.slug}`,
-      );
-    },
-  });
+  const createListingMutation = api.listing.create.useMutation();
+  const attachImagesMutation = api.listing.attachImages.useMutation();
 
   const form = useForm<NewListingFormValues>({
     resolver: zodResolver(schema),
@@ -123,33 +100,26 @@ export function NewListingForm() {
       price: "",
       isFree: false,
       priceNegotiable: false,
-      imageUrls: [],
     },
     mode: "onBlur",
   });
 
-  const categories = useMemo(
-    () => categoriesQuery.data ?? [],
-    [categoriesQuery.data],
-  );
-
-  const imageUrls =
-    useWatch({ control: form.control, name: "imageUrls" }) ?? [];
   const isFreeSelected =
     useWatch({ control: form.control, name: "isFree" }) ?? false;
   const isNegotiableSelected =
     useWatch({ control: form.control, name: "priceNegotiable" }) ?? false;
 
-  const validImageCount = imageUrls.filter((url) => isValidHttpUrl(url)).length;
-  const reachedImageLimit = imageUrls.length >= FREE_PLAN_MAX_IMAGES;
+  const validImageCount = selectedImages.length;
+  const reachedImageLimit = selectedImages.length >= FREE_PLAN_MAX_IMAGES;
 
   const removeImageSlot = (index: number) => {
-    const nextUrls = imageUrls.filter(
-      (_, currentIndex) => currentIndex !== index,
-    );
-    form.setValue("imageUrls", nextUrls, {
-      shouldDirty: true,
-      shouldValidate: true,
+    setSelectedImages((current) => {
+      const imageToRemove = current[index];
+      if (imageToRemove) {
+        URL.revokeObjectURL(imageToRemove.previewUrl);
+      }
+
+      return current.filter((_, currentIndex) => currentIndex !== index);
     });
   };
 
@@ -171,14 +141,14 @@ export function NewListingForm() {
     }
   };
 
-  const onChooseImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChooseImages = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
 
     if (files.length === 0) {
       return;
     }
 
-    const availableSlots = FREE_PLAN_MAX_IMAGES - imageUrls.length;
+    const availableSlots = FREE_PLAN_MAX_IMAGES - selectedImages.length;
 
     if (availableSlots <= 0) {
       setUploadError(t("errors.tooManyImages", { max: FREE_PLAN_MAX_IMAGES }));
@@ -187,6 +157,19 @@ export function NewListingForm() {
     }
 
     const acceptedFiles = files.slice(0, availableSlots);
+
+    if (
+      acceptedFiles.some(
+        (file) =>
+          !SUPPORTED_IMAGE_MIME_TYPES.includes(
+            file.type as (typeof SUPPORTED_IMAGE_MIME_TYPES)[number],
+          ),
+      )
+    ) {
+      setUploadError(t("errors.unsupportedFileType"));
+      event.target.value = "";
+      return;
+    }
 
     if (acceptedFiles.some((file) => file.size > MAX_IMAGE_FILE_SIZE_BYTES)) {
       setUploadError(
@@ -199,40 +182,21 @@ export function NewListingForm() {
     }
 
     setUploadError(null);
-    setUploadingImages(true);
+    const newImages = acceptedFiles.map((file) => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
 
-    try {
-      const payload = new FormData();
-      for (const file of acceptedFiles) {
-        payload.append("files", file);
-      }
-
-      const response = await fetch("/api/uploads/listing-images", {
-        method: "POST",
-        body: payload,
-      });
-
-      const data = (await response.json()) as
-        { urls?: string[]; errorKey?: string } | undefined;
-
-      if (!response.ok || !data?.urls) {
-        setUploadError(getUploadErrorMessage(data?.errorKey));
-        return;
-      }
-
-      form.setValue("imageUrls", [...imageUrls, ...data.urls], {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-    } catch {
-      setUploadError(t("errors.uploadFailed"));
-    } finally {
-      setUploadingImages(false);
-      event.target.value = "";
-    }
+    setSelectedImages((current) => [...current, ...newImages]);
+    event.target.value = "";
   };
 
-  const onSubmit = (values: NewListingFormValues) => {
+  const onSubmit = async (values: NewListingFormValues) => {
+    if (selectedImages.length === 0) {
+      setUploadError(t("errors.noImagesSelected"));
+      return;
+    }
+
     const parsedPrice = values.price?.trim() ? Number(values.price) : null;
 
     if (Number.isNaN(parsedPrice)) {
@@ -242,16 +206,59 @@ export function NewListingForm() {
       return;
     }
 
-    createListingMutation.mutate({
-      title: values.title,
-      categorySlug: values.categorySlug,
-      location: values.location,
-      description: values.description?.trim() || undefined,
-      price: values.isFree ? null : parsedPrice,
-      isFree: values.isFree,
-      priceNegotiable: values.priceNegotiable,
-      imageUrls: values.imageUrls,
-    });
+    setUploadError(null);
+    setUploadingImages(true);
+
+    try {
+      const listing = await createListingMutation.mutateAsync({
+        title: values.title,
+        categorySlug: values.categorySlug,
+        location: values.location,
+        description: values.description?.trim() || undefined,
+        price: values.isFree ? null : parsedPrice,
+        isFree: values.isFree,
+        priceNegotiable: values.priceNegotiable,
+      });
+
+      const payload = new FormData();
+      payload.append("listingId", listing.id);
+
+      for (const image of selectedImages) {
+        payload.append("files", image.file);
+      }
+
+      const uploadResponse = await fetch("/api/uploads/listing-images", {
+        method: "POST",
+        body: payload,
+      });
+
+      const uploadData = (await uploadResponse.json()) as
+        | { urls?: string[]; errorKey?: string }
+        | undefined;
+
+      if (!uploadResponse.ok || !uploadData?.urls) {
+        setUploadError(getUploadErrorMessage(uploadData?.errorKey));
+        return;
+      }
+
+      const updatedListing = await attachImagesMutation.mutateAsync({
+        listingId: listing.id,
+        imageUrls: uploadData.urls,
+      });
+
+      for (const image of selectedImages) {
+        URL.revokeObjectURL(image.previewUrl);
+      }
+      setSelectedImages([]);
+
+      router.push(
+        `/listings/categories/${updatedListing.categorySlug}/${updatedListing.slug}`,
+      );
+    } catch {
+      setUploadError(t("errors.uploadFailed"));
+    } finally {
+      setUploadingImages(false);
+    }
   };
 
   return (
@@ -286,65 +293,9 @@ export function NewListingForm() {
               </Field>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <Controller
-                  name="categorySlug"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>
-                        {t("fields.category.label")}
-                      </FieldLabel>
-                      <Combobox
-                        items={categories}
-                        onValueChange={field.onChange}
-                        {...field}
-                      >
-                        <ComboboxTrigger
-                          render={
-                            <Button
-                              variant="outline"
-                              className="w-full justify-between font-normal"
-                            >
-                              {field.value
-                                ? tCat(field.value)
-                                : t("fields.category.placeholder")}
-                            </Button>
-                          }
-                        />
-                        <ComboboxContent>
-                          <ComboboxInput
-                            showTrigger={false}
-                            placeholder={t("fields.category.search")}
-                          />
-                          <ComboboxEmpty>No items found.</ComboboxEmpty>
-                          <ComboboxList>
-                            {(item) => (
-                              <ComboboxItem key={item.id} value={item.slug}>
-                                {tCat(item.slug)}
-                              </ComboboxItem>
-                            )}
-                          </ComboboxList>
-                        </ComboboxContent>
-                      </Combobox>
+                <CategoryCombobox form={form} name="categorySlug" />
 
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Field>
-                  <FieldLabel htmlFor="location">
-                    {t("fields.location.label")}
-                  </FieldLabel>
-                  <Input
-                    id="location"
-                    placeholder={t("fields.location.placeholder")}
-                    {...form.register("location")}
-                  />
-                  <FieldError errors={[form.formState.errors.location]} />
-                </Field>
+                <LocationCombobox form={form} name="location" />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -409,38 +360,7 @@ export function NewListingForm() {
           </CardContent>
         </Card>
 
-        <Card className="">
-          <CardHeader>
-            <CardTitle>{t("checklist.title")}</CardTitle>
-            <CardDescription>{t("checklist.description")}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="bg-muted/50 rounded-2xl p-3">
-              <p className="font-medium capitalize">
-                {t("checklist.quality.title")}
-              </p>
-              <p className="text-muted-foreground mt-1">
-                {t("checklist.quality.body")}
-              </p>
-            </div>
-            <div className="bg-muted/50 rounded-2xl p-3">
-              <p className="font-medium capitalize">
-                {t("checklist.limit.title")}
-              </p>
-              <p className="text-muted-foreground mt-1">
-                {t("checklist.limit.body", { max: FREE_PLAN_MAX_IMAGES })}
-              </p>
-            </div>
-            <div className="bg-muted/50 rounded-2xl p-3">
-              <p className="font-medium capitalize">
-                {t("checklist.primary.title")}
-              </p>
-              <p className="text-muted-foreground mt-1">
-                {t("checklist.primary.body")}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        <NewListingChecklist />
       </div>
 
       <Card className="mt-6">
@@ -481,16 +401,16 @@ export function NewListingForm() {
           {uploadError && <FieldError>{uploadError}</FieldError>}
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {imageUrls.length === 0 && (
+            {selectedImages.length === 0 && (
               <div className="text-muted-foreground bg-muted/30 col-span-full rounded-2xl border border-dashed p-8 text-center text-sm">
                 <ImagePlus className="mx-auto mb-2 size-5" />
                 {t("images.emptyState")}
               </div>
             )}
 
-            {imageUrls.map((imageUrl, index) => (
+            {selectedImages.map((image, index) => (
               <div
-                key={`${index}-${imageUrl}`}
+                key={`${index}-${image.previewUrl}`}
                 className="bg-muted/30 rounded-2xl border p-3"
               >
                 <div className="mb-2 flex items-center justify-between">
@@ -516,7 +436,7 @@ export function NewListingForm() {
 
                 <div className="bg-background relative aspect-4/3 overflow-hidden rounded-xl border">
                   <Image
-                    src={imageUrl}
+                    src={image.previewUrl}
                     alt={t("images.previewAlt", { index: index + 1 })}
                     fill
                     unoptimized
@@ -527,14 +447,13 @@ export function NewListingForm() {
               </div>
             ))}
           </div>
-
-          <FieldError className="mt-3">
-            {form.formState.errors.imageUrls?.message}
-          </FieldError>
         </CardContent>
         <CardFooter className="flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {createListingMutation.error ? (
-            <FieldError>{createListingMutation.error.message}</FieldError>
+          {createListingMutation.error || attachImagesMutation.error ? (
+            <FieldError>
+              {attachImagesMutation.error?.message ??
+                createListingMutation.error?.message}
+            </FieldError>
           ) : (
             <p className="text-muted-foreground text-sm">{t("footer.note")}</p>
           )}
@@ -542,9 +461,15 @@ export function NewListingForm() {
           <Button
             type="submit"
             size="lg"
-            disabled={createListingMutation.isPending || uploadingImages}
+            disabled={
+              createListingMutation.isPending ||
+              attachImagesMutation.isPending ||
+              uploadingImages
+            }
           >
-            {createListingMutation.isPending
+            {createListingMutation.isPending ||
+            attachImagesMutation.isPending ||
+            uploadingImages
               ? t("footer.submitting")
               : t("footer.submit")}
           </Button>

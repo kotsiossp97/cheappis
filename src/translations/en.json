@@ -26,6 +26,12 @@
     "viewAll": "View all"
   },
   "Categories": {
+    "field": {
+      "label": "Category",
+      "placeholder": "Select category",
+      "search": "Search",
+      "noResults": "No results found"
+    },
     "categories": "Categories",
     "smartphones": "Smartphones",
     "tablets": "Tablets",
@@ -96,11 +102,6 @@
         "label": "Title",
         "placeholder": "e.g. iPhone 14 Pro 256GB - Excellent condition"
       },
-      "category": {
-        "label": "Category",
-        "placeholder": "Select category",
-        "search": "Search"
-      },
       "location": {
         "label": "Location",
         "placeholder": "Nicosia, Limassol, Larnaca..."
@@ -166,6 +167,18 @@
       "fileTooLarge": "Each image must be smaller than {maxMb}MB.",
       "uploadFailed": "Image upload failed. Please try again.",
       "invalidPrice": "Price must be a valid number."
+    }
+  },
+  "LocationCombobox": {
+    "label": "Location",
+    "placeholder": "Select a district",
+    "districts": {
+      "nicosia": "Nicosia",
+      "limassol": "Limassol",
+      "larnaca": "Larnaca",
+      "paphos": "Paphos",
+      "famagusta": "Famagusta",
+      "kyrenia": "Kyrenia"
     }
   }
 }

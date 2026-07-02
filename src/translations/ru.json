@@ -26,6 +26,12 @@
     "viewAll": "Смотреть все"
   },
   "Categories": {
+    "field": {
+      "label": "Категория",
+      "placeholder": "Выберите категорию",
+      "search": "Поиск",
+      "noResults": "Результаты не найдены"
+    },
     "categories": "Категории",
     "smartphones": "Смартфоны",
     "tablets": "Планшеты",
@@ -96,11 +102,6 @@
         "label": "Заголовок",
         "placeholder": "например: iPhone 14 Pro 256GB - Отличное состояние"
       },
-      "category": {
-        "label": "Категория",
-        "placeholder": "Выберите категорию",
-        "search": "Поиск"
-      },
       "location": {
         "label": "Локация",
         "placeholder": "Никосия, Лимассол, Ларнака..."
@@ -166,6 +167,18 @@
       "fileTooLarge": "Размер каждого изображения должен быть меньше {maxMb}MB.",
       "uploadFailed": "Не удалось загрузить изображение. Попробуйте еще раз.",
       "invalidPrice": "Цена должна быть корректным числом."
+    }
+  },
+  "LocationCombobox": {
+    "label": "Локация",
+    "placeholder": "Выберите район",
+    "districts": {
+      "nicosia": "Никосия",
+      "limassol": "Лимассол",
+      "larnaca": "Ларнака",
+      "paphos": "Пафос",
+      "famagusta": "Аммохостос",
+      "kyrenia": "Кирения"
     }
   }
 }
