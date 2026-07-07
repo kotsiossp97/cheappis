@@ -1,0 +1,10 @@
+{
+  "email-verification": {
+    "subject": "Email verification for signing up to Cheappis",
+    "hello": "Hi there",
+    "main-body": "You’re just one step away from completing your Cheappis sign‑up. To activate your account, please verify your email by clicking the button below:",
+    "mistake-msg": "If you didn’t create an account, you can safely ignore this message.",
+    "verify-button": "Complete Your Sign‑Up",
+    "thank-you": "Thank you for joining Cheappis, <team>The Cheappis Team</team>"
+  }
+}

@@ -44,15 +44,68 @@
   },
   "SignInPage": {
     "title": "Σύνδεση στον λογαριασμό σας",
-    "subtitle": "Εισάγετε το email σας για να συνδεθείτε",
+    "subtitle": "Συνδεθείτε ή κάντε εγγραφή με έναν από τους πιο κάτω τρόπους",
+    "emailLabel": "Email",
+    "emailPlaceholder": "m@example.com",
     "passwordLabel": "Κωδικός πρόσβασης",
     "forgotPassword": "Ξεχάσατε τον κωδικό σας;",
-    "loginButton": "Σύνδεση",
+    "continueButton": "Συνέχεια",
+    "passwordSignInButton": "Σύνδεση",
+    "passkeyButton": "Σύνδεση με passkey",
+    "google": "Συνέχεια με Google",
+    "apple": "Συνέχεια με Apple",
+    "facebook": "Συνέχεια με Facebook",
+    "loading": "Παρακαλώ περιμένετε...",
     "continueWith": "Ή συνεχίστε με",
+    "emailSentTitle": "Ελέγξτε το email σας",
+    "emailSentDescription": "Στείλαμε έναν ασφαλή σύνδεσμο σύνδεσης στο {email}.",
+    "emailSentHint": "Ανοίξτε τον σύνδεσμο στο email για να ολοκληρώσετε τη σύνδεση.",
+    "emailSentHintWithExpiry": "Ο σύνδεσμος λήγει σε περίπου {minutes} λεπτά.",
+    "resendButton": "Επανάληψη αποστολής email",
     "loginWith": "Σύνδεση με",
     "noAccount": "Δεν έχετε λογαριασμό;",
     "signUp": "Εγγραφή",
-    "backToHome": "Επιστροφή στην αρχική"
+    "backToHome": "Επιστροφή στην αρχική",
+    "splashAlt": "Εικόνα σελίδας σύνδεσης",
+    "errors": {
+      "generic": "Αδυναμία σύνδεσης. Δοκιμάστε ξανά.",
+      "invalidCredentials": "Μη έγκυρο email ή κωδικός.",
+      "passkeyUnavailable": "Τα passkeys δεν υποστηρίζονται σε αυτόν τον browser ή τη συσκευή.",
+      "userCancelled": "Η διαδικασία εισόδου ακυρώθηκε από τον χρήστη."
+    }
+  },
+  "CompleteProfilePage": {
+    "title": "Ολοκλήρωσε το προφίλ σου",
+    "subtitle": "Πριν συνεχίσεις, όρισε ισχυρό κωδικό και συμπλήρωσε τα στοιχεία επικοινωνίας σου.",
+    "fields": {
+      "name": {
+        "label": "Όνομα",
+        "placeholder": "Γιάννης"
+      },
+      "surname": {
+        "label": "Επώνυμο",
+        "placeholder": "Παπαδόπουλος"
+      },
+      "phone": {
+        "label": "Τηλέφωνο",
+        "description": "Χρησιμοποίησε ενεργό αριθμό ώστε να μπορούν να επικοινωνούν οι αγοραστές."
+      },
+      "password": {
+        "label": "Ισχυρός κωδικός",
+        "placeholder": "Δημιούργησε ισχυρό κωδικό",
+        "description": "Χρησιμοποίησε τουλάχιστον 10 χαρακτήρες με κεφαλαίο, μικρό, αριθμό και ειδικό σύμβολο."
+      }
+    },
+    "actions": {
+      "submit": "Αποθήκευση και συνέχεια",
+      "submitting": "Αποθήκευση..."
+    },
+    "errors": {
+      "nameRequired": "Το όνομα είναι υποχρεωτικό.",
+      "surnameRequired": "Το επώνυμο είναι υποχρεωτικό.",
+      "phoneRequired": "Το τηλέφωνο είναι υποχρεωτικό.",
+      "passwordWeak": "Ο κωδικός πρέπει να είναι ισχυρός (10+ χαρακτήρες, κεφαλαίο, μικρό, αριθμός, ειδικό σύμβολο)."
+    }
   },
   "Listing": {
     "listing": "{count, plural, =0 {Δεν βρέθηκαν αγγελίες} one {Αγγελία} other {Αγγελίες}}",

@@ -7,12 +7,31 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    BETTER_AUTH_URL: z.string().url().optional(),
     BETTER_AUTH_SECRET:
       process.env.NODE_ENV === "production"
         ? z.string()
         : z.string().optional(),
-    BETTER_AUTH_GITHUB_CLIENT_ID: z.string(),
-    BETTER_AUTH_GITHUB_CLIENT_SECRET: z.string(),
+    BETTER_AUTH_GITHUB_CLIENT_ID: z.string().optional(),
+    BETTER_AUTH_GITHUB_CLIENT_SECRET: z.string().optional(),
+    BETTER_AUTH_GOOGLE_CLIENT_ID: z.string().optional(),
+    BETTER_AUTH_GOOGLE_CLIENT_SECRET: z.string().optional(),
+    BETTER_AUTH_APPLE_CLIENT_ID: z.string().optional(),
+    BETTER_AUTH_APPLE_CLIENT_SECRET: z.string().optional(),
+    BETTER_AUTH_APPLE_APP_BUNDLE_IDENTIFIER: z.string().optional(),
+    BETTER_AUTH_FACEBOOK_CLIENT_ID: z.string().optional(),
+    BETTER_AUTH_FACEBOOK_CLIENT_SECRET: z.string().optional(),
+    BETTER_AUTH_PASSKEY_RP_ID: z.string().optional(),
+    BETTER_AUTH_PASSKEY_RP_NAME: z.string().optional(),
+    BETTER_AUTH_PASSKEY_ORIGIN: z.string().url().optional(),
+    BETTER_AUTH_MAGIC_LINK_EXPIRES_IN_SECONDS: z.coerce
+      .number()
+      .int()
+      .min(60)
+      .max(86_400)
+      .optional(),
+    AWS_ACCESS_KEY_ID: z.string().optional(),
+    AWS_SECRET_ACCESS_KEY: z.string().optional(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -34,10 +53,29 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_GITHUB_CLIENT_ID: process.env.BETTER_AUTH_GITHUB_CLIENT_ID,
     BETTER_AUTH_GITHUB_CLIENT_SECRET:
       process.env.BETTER_AUTH_GITHUB_CLIENT_SECRET,
+    BETTER_AUTH_GOOGLE_CLIENT_ID: process.env.BETTER_AUTH_GOOGLE_CLIENT_ID,
+    BETTER_AUTH_GOOGLE_CLIENT_SECRET:
+      process.env.BETTER_AUTH_GOOGLE_CLIENT_SECRET,
+    BETTER_AUTH_APPLE_CLIENT_ID: process.env.BETTER_AUTH_APPLE_CLIENT_ID,
+    BETTER_AUTH_APPLE_CLIENT_SECRET:
+      process.env.BETTER_AUTH_APPLE_CLIENT_SECRET,
+    BETTER_AUTH_APPLE_APP_BUNDLE_IDENTIFIER:
+      process.env.BETTER_AUTH_APPLE_APP_BUNDLE_IDENTIFIER,
+    BETTER_AUTH_FACEBOOK_CLIENT_ID: process.env.BETTER_AUTH_FACEBOOK_CLIENT_ID,
+    BETTER_AUTH_FACEBOOK_CLIENT_SECRET:
+      process.env.BETTER_AUTH_FACEBOOK_CLIENT_SECRET,
+    BETTER_AUTH_PASSKEY_RP_ID: process.env.BETTER_AUTH_PASSKEY_RP_ID,
+    BETTER_AUTH_PASSKEY_RP_NAME: process.env.BETTER_AUTH_PASSKEY_RP_NAME,
+    BETTER_AUTH_PASSKEY_ORIGIN: process.env.BETTER_AUTH_PASSKEY_ORIGIN,
+    BETTER_AUTH_MAGIC_LINK_EXPIRES_IN_SECONDS:
+      process.env.BETTER_AUTH_MAGIC_LINK_EXPIRES_IN_SECONDS,
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     BUNNY_STORAGE_ACCESS_KEY: process.env.BUNNY_STORAGE_ACCESS_KEY,

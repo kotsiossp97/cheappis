@@ -374,7 +374,9 @@ export const listingRouter = createTRPCRouter({
       }
 
       const updatedListing = await ctx.db.$transaction(async (tx) => {
-        await tx.listingImage.deleteMany({ where: { listingId: input.listingId } });
+        await tx.listingImage.deleteMany({
+          where: { listingId: input.listingId },
+        });
 
         await tx.listingImage.createMany({
           data: input.imageUrls.map((url, index) => ({

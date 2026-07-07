@@ -44,15 +44,68 @@
   },
   "SignInPage": {
     "title": "Login to your account",
-    "subtitle": "Enter your email below to login to your account",
+    "subtitle": "Login or sign up using one of the following methods",
+    "emailLabel": "Email",
+    "emailPlaceholder": "m@example.com",
     "passwordLabel": "Password",
     "forgotPassword": "Forgot your password?",
-    "loginButton": "Login",
+    "continueButton": "Continue",
+    "passwordSignInButton": "Sign in",
+    "passkeyButton": "Sign in with passkey",
+    "google": "Continue with Google",
+    "apple": "Continue with Apple",
+    "facebook": "Continue with Facebook",
+    "loading": "Please wait...",
     "continueWith": "Or continue with",
+    "emailSentTitle": "Check your email",
+    "emailSentDescription": "We sent a secure sign-in link to {email}.",
+    "emailSentHint": "Open the link in that email to complete sign in.",
+    "emailSentHintWithExpiry": "The link expires in about {minutes} minutes.",
+    "resendButton": "Resend email",
     "loginWith": "Login with",
     "noAccount": "Don't have an account?",
     "signUp": "Sign up",
-    "backToHome": "Back to home"
+    "backToHome": "Back to home",
+    "splashAlt": "Sign in illustration",
+    "errors": {
+      "generic": "Unable to sign in. Please try again.",
+      "invalidCredentials": "Invalid email or password.",
+      "passkeyUnavailable": "Passkeys are not supported on this browser or device.",
+      "userCancelled": "Login was cancelled by the user."
+    }
+  },
+  "CompleteProfilePage": {
+    "title": "Complete your profile",
+    "subtitle": "Before you continue, set a strong password and provide your contact details.",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "John"
+      },
+      "surname": {
+        "label": "Surname",
+        "placeholder": "Doe"
+      },
+      "phone": {
+        "label": "Phone",
+        "description": "Use an active phone number so buyers can contact you."
+      },
+      "password": {
+        "label": "Strong password",
+        "placeholder": "Create a strong password",
+        "description": "Use at least 10 characters with uppercase, lowercase, number, and special symbol."
+      }
+    },
+    "actions": {
+      "submit": "Save and continue",
+      "submitting": "Saving..."
+    },
+    "errors": {
+      "nameRequired": "Name is required.",
+      "surnameRequired": "Surname is required.",
+      "phoneRequired": "Phone is required.",
+      "passwordWeak": "Password must be strong (10+ chars, uppercase, lowercase, number, special symbol)."
+    }
   },
   "Listing": {
     "listing": "{count, plural, =0 {No Listings} one {Listing} other {Listings}}",

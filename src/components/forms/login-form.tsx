@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
+  FieldError,
   Field,
   FieldDescription,
   FieldGroup,
@@ -12,15 +13,134 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Home } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import SocialLoginForm from "@/components/forms/login/social-login";
+import { AuthError } from "@/lib/custom-errors";
+import { authClient } from "@/server/better-auth/client";
+import { api } from "@/trpc/react";
+
+const getSafeNextPath = (value: string | null) => {
+  if (!value) {
+    return "/";
+  }
+
+  return value.startsWith("/") ? value : "/";
+};
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const router = useRouter();
   const t = useTranslations("SignInPage");
+  const locale = useLocale();
+  const searchParams = useSearchParams();
+  const emailVerificationInitMutation =
+    api.auth.emailVerificationInit.useMutation();
+  const signInMethodMutation = api.auth.signInMethod.useMutation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [signInMode, setSignInMode] = useState<"email" | "password">("email");
+  const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
+  const [emailSentExpiresInMinutes, setEmailSentExpiresInMinutes] = useState<
+    number | null
+  >(null);
+
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const nextPath = useMemo(
+    () => getSafeNextPath(searchParams.get("next")),
+    [searchParams],
+  );
+
+  const authLocale =
+    locale === "el" || locale === "ru" || locale === "en" ? locale : "en";
+
+  const handleEmailSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAuthError(null);
+
+    try {
+      const trimmedEmail = email.trim().toLowerCase();
+      const methodResult = await signInMethodMutation.mutateAsync({
+        email: trimmedEmail,
+      });
+
+      if (methodResult.method === "password") {
+        setSignInMode("password");
+        setEmailSentTo(null);
+        setEmailSentExpiresInMinutes(null);
+        return;
+      }
+
+      const res = await emailVerificationInitMutation.mutateAsync({
+        email: trimmedEmail,
+        locale: authLocale,
+        callbackPath: nextPath,
+      });
+
+      if (!res.success) {
+        throw new AuthError("errors.generic", res.message);
+      }
+
+      setEmailSentTo(trimmedEmail);
+      setEmailSentExpiresInMinutes(
+        res.expiresInSeconds
+          ? Math.ceil(res.expiresInSeconds / 60)
+          : emailSentExpiresInMinutes,
+      );
+    } catch (err) {
+      if (err instanceof AuthError) {
+        if (err.errorSlug) {
+          setAuthError(t(err.errorSlug));
+        } else {
+          setAuthError(err.message);
+        }
+      } else {
+        setAuthError(t("errors.generic"));
+      }
+    }
+  };
+
+  const handlePasswordSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAuthError(null);
+
+    try {
+      const { error } = await authClient.signIn.email({
+        email: email.trim().toLowerCase(),
+        password,
+        callbackURL: nextPath,
+      });
+
+      if (error) {
+        throw new AuthError("errors.invalidCredentials", error.message);
+      }
+
+      router.push(nextPath);
+      router.refresh();
+    } catch (err) {
+      if (err instanceof AuthError) {
+        if (err.errorSlug) {
+          setAuthError(t(err.errorSlug));
+        } else {
+          setAuthError(err.message);
+        }
+      } else {
+        setAuthError(t("errors.generic"));
+      }
+    }
+  };
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      onSubmit={signInMode === "password" ? handlePasswordSignIn : handleEmailSignIn}
+      {...props}
+    >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">{t("title")}</h1>
@@ -28,52 +148,101 @@ export function LoginForm({
             {t("subtitle")}
           </p>
         </div>
-        <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" placeholder="m@example.com" required />
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="password">{t("passwordLabel")}</FieldLabel>
-          <Input id="password" type="password" required />
-          <div className="flex items-center">
-            <a
-              href="#"
-              className="ml-auto text-xs underline-offset-4 hover:underline"
-            >
-              {t("forgotPassword")}
-            </a>
-          </div>
-        </Field>
-        <Field>
-          <Button type="submit">{t("loginButton")}</Button>
-        </Field>
-        <FieldSeparator>{t("continueWith")}</FieldSeparator>
-        <Field>
-          <Button variant="outline" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path
-                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-                fill="currentColor"
+        {signInMode === "email" && (
+          <>
+            <SocialLoginForm />
+            <FieldSeparator className="my-2">{t("continueWith")}</FieldSeparator>
+          </>
+        )}
+
+        {signInMode === "password" ? (
+          <>
+            <Field>
+              <FieldLabel htmlFor="email">{t("emailLabel")}</FieldLabel>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                autoComplete="email"
+                required
+                disabled
               />
-            </svg>
-            {t("loginWith")} GitHub
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="password">{t("passwordLabel")}</FieldLabel>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="current-password"
+                required
+              />
+            </Field>
+          </>
+        ) : emailSentTo ? (
+          <div className="bg-muted/40 space-y-2 rounded-lg border p-4 text-sm">
+            <p className="font-medium">{t("emailSentTitle")}</p>
+            <p className="text-muted-foreground">
+              {t("emailSentDescription", { email: emailSentTo })}
+            </p>
+            <p className="text-muted-foreground">
+              {emailSentExpiresInMinutes !== null
+                ? t("emailSentHintWithExpiry", {
+                    minutes: emailSentExpiresInMinutes,
+                  })
+                : t("emailSentHint")}
+            </p>
+          </div>
+        ) : (
+          <Field>
+            <FieldLabel htmlFor="email">{t("emailLabel")}</FieldLabel>
+            <Input
+              id="email"
+              type="email"
+              placeholder={t("emailPlaceholder")}
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email webauthn"
+              required
+            />
+          </Field>
+        )}
+        {authError && <FieldError>{authError}</FieldError>}
+        <Field>
+          <Button
+            type="submit"
+            disabled={
+              emailVerificationInitMutation.isPending || signInMethodMutation.isPending
+            }
+            className={cn(
+              emailSentTo || signInMode === "password" || (email && email.trim().length > 0)
+                ? "opacity-100"
+                : "invisible opacity-0",
+              "transition-all",
+            )}
+          >
+            {emailVerificationInitMutation.isPending || signInMethodMutation.isPending
+              ? t("loading")
+              : signInMode === "password"
+                ? t("passwordSignInButton")
+              : emailSentTo
+                ? t("resendButton")
+                : t("continueButton")}
           </Button>
-          <FieldDescription className="text-center">
-            {t("noAccount")}{" "}
-            <a href="#" className="underline underline-offset-4">
-              {t("signUp")}
-            </a>
-          </FieldDescription>
-          <FieldDescription className="text-center">
-            <Link
-              href="/"
-              className="flex items-center justify-center gap-1 text-sm"
-            >
-              <Home className="size-4" />
-              {t("backToHome")}
-            </Link>
-          </FieldDescription>
         </Field>
+
+        <FieldDescription className="text-center">
+          <Link
+            href="/"
+            className="flex items-center justify-center gap-1 text-sm"
+          >
+            <Home className="size-4" />
+            {t("backToHome")}
+          </Link>
+        </FieldDescription>
       </FieldGroup>
     </form>
   );

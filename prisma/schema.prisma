@@ -2,7 +2,7 @@
 // learn more: https://better-auth.com/docs/concepts/database
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
@@ -12,7 +12,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -43,21 +42,43 @@ model Post {
 model User {
   id            String    @id
   name          String //@db.Text
+  surname       String?
   email         String
   emailVerified Boolean   @default(false)
   image         String? //@db.Text
   role          UserRole  @default(USER)
   phone         String?
   location      String?
+  onboardingCompleted Boolean @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
+  passkeys      Passkey[]
   posts         Post[]
   listings      Listing[]
 
   @@unique([email])
   @@map("user")
+}
+
+model Passkey {
+  id           String   @id
+  name         String?
+  publicKey    String
+  userId       String
+  credentialID String
+  counter      Int
+  deviceType   String
+  backedUp     Boolean
+  transports   String?
+  createdAt    DateTime?
+  aaguid       String?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([credentialID])
+  @@index([userId])
+  @@map("passkey")
 }
 
 model Category {

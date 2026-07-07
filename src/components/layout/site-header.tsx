@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
+import HeaderUserMenu from "@/components/layout/header-user-menu";
 
 function SiteHeader() {
   const t = useTranslations("SiteHeader");
@@ -38,6 +39,7 @@ function SiteHeader() {
           <HeaderSearch />
         </div>
 
+        {/* Mobile Menu */}
         <div className="flex flex-1 items-center justify-end gap-1 sm:hidden">
           <LanguageSwitch />
           <ThemeSwitch />
@@ -46,6 +48,7 @@ function SiteHeader() {
               <PlusCircle />
             </Button>
           </Link>
+          <HeaderUserMenu />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="sm:hidden">
@@ -75,14 +78,15 @@ function SiteHeader() {
                   <span className="text-muted-foreground text-sm">
                     {t("signIn")}
                   </span>
-                  <Link href="/sign-in">
+                  <HeaderUserMenu />
+                  {/* <Link href="/sign-in">
                     <Button variant="outline" size="icon">
                       <User />
                     </Button>
-                  </Link>
+                  </Link> */}
                 </div>
                 <Link href="/listings/new" onClick={closeSheet}>
-                  <Button size="sm" className="w-full">
+                  <Button size="lg" className="w-full">
                     <PlusCircle className="size-4" />
                     {t("postListing")}
                   </Button>
@@ -117,12 +121,7 @@ function SiteHeader() {
         <div className="ml-auto hidden items-center gap-2 sm:flex">
           <ThemeSwitch />
           <LanguageSwitch />
-          <Link href="/sign-in">
-            <Button variant="ghost" size="sm">
-              <User className="size-4" />
-              {t("signIn")}
-            </Button>
-          </Link>
+          <HeaderUserMenu />
           <Link href="/listings/new">
             <Button size="sm">
               <PlusCircle className="size-4" />

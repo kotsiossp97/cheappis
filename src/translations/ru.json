@@ -45,14 +45,67 @@
   "SignInPage": {
     "title": "Войдите в свой аккаунт",
     "subtitle": "Введите свой email, чтобы войти в аккаунт",
+    "emailLabel": "Email",
+    "emailPlaceholder": "m@example.com",
     "passwordLabel": "Пароль",
     "forgotPassword": "Забыли пароль?",
-    "loginButton": "Войти",
+    "continueButton": "Продолжить",
+    "passwordSignInButton": "Войти",
+    "passkeyButton": "Войти с passkey",
+    "google": "Продолжить с Google",
+    "apple": "Продолжить с Apple",
+    "facebook": "Продолжить с Facebook",
+    "loading": "Пожалуйста, подождите...",
     "continueWith": "Или продолжить с",
+    "emailSentTitle": "Проверьте вашу почту",
+    "emailSentDescription": "Мы отправили безопасную ссылку для входа на {email}.",
+    "emailSentHint": "Откройте ссылку в письме, чтобы завершить вход.",
+    "emailSentHintWithExpiry": "Ссылка истечет примерно через {minutes} минут.",
+    "resendButton": "Отправить письмо повторно",
     "loginWith": "Войти через",
     "noAccount": "Нет аккаунта?",
     "signUp": "Зарегистрироваться",
-    "backToHome": "Назад на главную"
+    "backToHome": "Назад на главную",
+    "splashAlt": "Иллюстрация страницы входа",
+    "errors": {
+      "generic": "Не удалось войти. Попробуйте еще раз.",
+      "invalidCredentials": "Неверный email или пароль.",
+      "passkeyUnavailable": "Passkey не поддерживается в этом браузере или на этом устройстве.",
+      "userCancelled": "Процесс входа был отменен пользователем."
+    }
+  },
+  "CompleteProfilePage": {
+    "title": "Завершите профиль",
+    "subtitle": "Перед продолжением задайте надежный пароль и заполните контактные данные.",
+    "fields": {
+      "name": {
+        "label": "Имя",
+        "placeholder": "Иван"
+      },
+      "surname": {
+        "label": "Фамилия",
+        "placeholder": "Иванов"
+      },
+      "phone": {
+        "label": "Телефон",
+        "description": "Используйте активный номер, чтобы покупатели могли связаться с вами."
+      },
+      "password": {
+        "label": "Надежный пароль",
+        "placeholder": "Создайте надежный пароль",
+        "description": "Минимум 10 символов: заглавная, строчная, цифра и спецсимвол."
+      }
+    },
+    "actions": {
+      "submit": "Сохранить и продолжить",
+      "submitting": "Сохранение..."
+    },
+    "errors": {
+      "nameRequired": "Имя обязательно.",
+      "surnameRequired": "Фамилия обязательна.",
+      "phoneRequired": "Телефон обязателен.",
+      "passwordWeak": "Пароль должен быть надежным (10+ символов, заглавная, строчная, цифра, спецсимвол)."
+    }
   },
   "Listing": {
     "listing": "{count, plural, =0 {Объявлений не найдено} one {Объявление} other {Объявления}}",
