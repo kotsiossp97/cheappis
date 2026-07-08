@@ -1,6 +1,11 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
 import { useFormatter, useTranslations } from "next-intl";
 import { type Listing } from "@/lib/types/listing";
 import TooltipWrapper from "@/components/reusable/tooltip-wrapper";
@@ -9,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import StarRating from "@/components/reusable/star-rating";
 import { Button } from "@/components/ui/button";
 import ShowPhoneButton from "@/components/listings/show-phone-button";
+import { getUserInitials } from "@/lib/utils";
 
 interface ListingUserCardProps {
   listing: Listing;
@@ -24,22 +30,39 @@ export default function ListingUserCard({ listing }: ListingUserCardProps) {
       <CardContent>
         <div className="flex flex-wrap items-center gap-2">
           <Avatar size="lg">
-            <AvatarFallback>KA</AvatarFallback>
+            <AvatarImage src={listing.user.image ?? undefined} />
+            <AvatarFallback>
+              {getUserInitials(listing.user.name, listing.user.surname)}
+            </AvatarFallback>
             <AvatarBadge className="bg-green-600" />
           </Avatar>
           <div className="flex items-center">
             <p className="flex flex-col">
-              <span className="font-semibold">Konstantinos Andreou</span>
-              <span className="text-muted-foreground text-xs">
-                {t("memberSince", {
-                  relativeTime: format.relativeTime(
-                    new Date(listing.createdAt),
-                    now,
-                  ),
-                })}
+              <span className="font-semibold capitalize">
+                {listing.user.name}{" "}
+                {listing.user?.surname?.charAt(0).toUpperCase()}.
               </span>
+
+              <TooltipWrapper
+                tooltipContent={format.dateTime(
+                  new Date(listing.user.createdAt),
+                  {
+                    dateStyle: "long",
+                    timeStyle: "short",
+                  },
+                )}
+              >
+                <span className="text-muted-foreground text-xs">
+                  {t("memberSince", {
+                    relativeTime: format.relativeTime(
+                      new Date(listing.createdAt),
+                      now,
+                    ),
+                  })}
+                </span>
+              </TooltipWrapper>
             </p>
-            {true && (
+            {listing.user.verified && (
               <span className="bg-primary text-primary-foreground ml-2 self-center rounded-full p-1 transition hover:scale-110 hover:rotate-360">
                 <TooltipWrapper tooltipContent={t("verifiedSeller")}>
                   <BadgeCheck className="size-5" />

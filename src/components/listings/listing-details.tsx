@@ -1,6 +1,7 @@
 "use client";
 
 import ListingUserCard from "@/components/listings/listing-user-details";
+import TooltipWrapper from "@/components/reusable/tooltip-wrapper";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { type Listing } from "@/lib/types/listing";
@@ -15,6 +16,8 @@ export default function ListingDetails({ listing }: ListingDetailsProps) {
   const format = useFormatter();
   // const tCat = useTranslations("Categories");
   const t = useTranslations("Listing");
+  const tDistrict = useTranslations("LocationCombobox.districts");
+
   const now = new Date();
 
   const formatPrice = (price?: number | null) => {
@@ -34,12 +37,20 @@ export default function ListingDetails({ listing }: ListingDetailsProps) {
       <div className="my-3 flex flex-wrap gap-2">
         <Badge variant="outline">
           <MapPin />
-          {listing.location}
+          {tDistrict(listing.location)}
         </Badge>
-        <Badge variant="outline">
-          {format.relativeTime(new Date(listing.createdAt), now)}
-        </Badge>
+        <TooltipWrapper
+          tooltipContent={format.dateTime(new Date(listing.createdAt), {
+            dateStyle: "long",
+            timeStyle: "short",
+          })}
+        >
+          <Badge variant="outline">
+            {format.relativeTime(new Date(listing.createdAt), now)}
+          </Badge>
+        </TooltipWrapper>
       </div>
+
       <div className="my-5 flex items-center gap-4">
         <span className="text-primary text-3xl font-medium">
           {formatPrice(listing.price)}

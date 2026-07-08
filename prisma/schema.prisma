@@ -40,30 +40,31 @@ model Post {
 }
 
 model User {
-  id            String    @id
-  name          String //@db.Text
-  surname       String?
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String? //@db.Text
-  role          UserRole  @default(USER)
-  phone         String?
-  location      String?
-  onboardingCompleted Boolean @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  passkeys      Passkey[]
-  posts         Post[]
-  listings      Listing[]
+  id                  String    @id
+  name                String //@db.Text
+  surname             String?
+  email               String
+  emailVerified       Boolean   @default(false)
+  image               String? //@db.Text
+  role                UserRole  @default(USER)
+  phone               String?
+  phoneVerified       Boolean   @default(false)
+  location            String?
+  onboardingCompleted Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @default(now()) @updatedAt
+  sessions            Session[]
+  accounts            Account[]
+  passkeys            Passkey[]
+  posts               Post[]
+  listings            Listing[]
 
   @@unique([email])
   @@map("user")
 }
 
 model Passkey {
-  id           String   @id
+  id           String    @id
   name         String?
   publicKey    String
   userId       String
@@ -74,7 +75,7 @@ model Passkey {
   transports   String?
   createdAt    DateTime?
   aaguid       String?
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([credentialID])
   @@index([userId])
@@ -94,22 +95,22 @@ model Category {
 }
 
 model Listing {
-  id              String        @id @default(cuid())
-  slug            String        @unique
+  id              String         @id @default(cuid())
+  slug            String         @unique
   title           String
   description     String?
   price           Int?
-  isFree          Boolean       @default(false)
-  priceNegotiable Boolean       @default(false)
+  isFree          Boolean        @default(false)
+  priceNegotiable Boolean        @default(false)
   location        String
-  featured        Boolean       @default(false)
-  status          ListingStatus @default(ACTIVE)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  featured        Boolean        @default(false)
+  status          ListingStatus  @default(ACTIVE)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   categoryId      String
   userId          String
-  category        Category      @relation(fields: [categoryId], references: [id])
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category        Category       @relation(fields: [categoryId], references: [id])
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   images          ListingImage[]
 
   @@index([categoryId, createdAt])

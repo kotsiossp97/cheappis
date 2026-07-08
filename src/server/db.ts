@@ -13,6 +13,17 @@ const createPrismaClient = () =>
       env.NODE_ENV === "development"
         ? ["query", "info", "warn", "error"]
         : ["error"],
+  }).$extends({
+    result: {
+      user: {
+        verified: {
+          needs: { emailVerified: true, phoneVerified: true },
+          compute(user) {
+            return user.emailVerified && user.phoneVerified;
+          },
+        },
+      },
+    },
   });
 
 const globalForPrisma = globalThis as unknown as {

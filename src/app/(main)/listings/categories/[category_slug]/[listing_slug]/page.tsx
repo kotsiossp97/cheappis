@@ -14,7 +14,7 @@ export default async function ListingPage({
 }) {
   const { category_slug, listing_slug } = await params;
 
-  const listing = await api.listing.getBySlug({
+  let listing = await api.listing.getBySlug({
     categorySlug: category_slug,
     listingSlug: listing_slug,
   });
@@ -23,6 +23,7 @@ export default async function ListingPage({
     notFound();
   }
 
+  listing = JSON.parse(JSON.stringify(listing)) as typeof listing;
   const similarListings = await api.listing.getSimilar({
     categorySlug: category_slug,
     excludeSlug: listing.slug,
@@ -41,7 +42,7 @@ export default async function ListingPage({
               <ImageCarousel
                 // className="mt-6"
                 minimizedClassName=""
-                images={listing.images}
+                images={listing.images.map((image) => image.url)}
                 listingTitle={listing.title}
               />
             </div>

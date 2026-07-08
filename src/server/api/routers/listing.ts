@@ -166,7 +166,7 @@ export const listingRouter = createTRPCRouter({
         select: listingSelect,
       });
 
-      return rows.map(toListingDto);
+      return rows;
     }),
 
   list: publicProcedure.input(listInputSchema).query(async ({ ctx, input }) => {
@@ -248,14 +248,29 @@ export const listingRouter = createTRPCRouter({
             slug: input.categorySlug,
           },
         },
-        select: listingSelect,
+        // select: listingSelect,
+        select: {
+          ...listingSelect,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              surname: true,
+              email: true,
+              createdAt: true,
+              image: true,
+              phone: true,
+              verified: true,
+            },
+          },
+        },
       });
 
       if (!listing) {
         return null;
       }
 
-      return toListingDto(listing);
+      return listing;
     }),
 
   getByCategory: publicProcedure
@@ -275,10 +290,24 @@ export const listingRouter = createTRPCRouter({
         },
         orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
         take: input.limit,
-        select: listingSelect,
+        select: {
+          ...listingSelect,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              surname: true,
+              email: true,
+              createdAt: true,
+              image: true,
+              phone: true,
+              verified: true,
+            },
+          },
+        },
       });
 
-      return rows.map(toListingDto);
+      return rows;
     }),
 
   getSimilar: publicProcedure
@@ -302,10 +331,24 @@ export const listingRouter = createTRPCRouter({
         },
         orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
         take: input.limit,
-        select: listingSelect,
+        select: {
+          ...listingSelect,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              surname: true,
+              email: true,
+              createdAt: true,
+              image: true,
+              phone: true,
+              verified: true,
+            },
+          },
+        },
       });
 
-      return rows.map(toListingDto);
+      return rows;
     }),
 
   create: protectedProcedure

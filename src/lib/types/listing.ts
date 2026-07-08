@@ -1,13 +1,3 @@
-export interface Listing {
-  slug: string;
-  title: string;
-  description?: string;
-  price?: number | null;
-  priceNegotiable?: boolean;
-  isFree?: boolean;
-  location: string;
-  createdAt: string;
-  categorySlug: string;
-  images: string[];
-  featured?: boolean;
-}
+import { type RouterOutputs } from "@/trpc/react";
+
+export type Listing = NonNullable<RouterOutputs["listing"]["getBySlug"]>;

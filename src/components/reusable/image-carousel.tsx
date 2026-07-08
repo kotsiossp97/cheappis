@@ -96,7 +96,7 @@ export default function ImageCarousel({
 
           <CarouselPreview />
 
-          <div className="absolute top-2 right-2 z-50">
+          <div className="absolute top-2 right-2 z-20">
             <TooltipWrapper
               tooltipContent={
                 <span className="capitalize">

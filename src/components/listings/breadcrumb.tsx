@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { type Listing } from "@/lib/types/listing";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 interface ListingBreadcrumbProps {
   category_slug?: string;
@@ -28,23 +29,27 @@ export default function ListingBreadcrumb({
         {!category_slug && (
           <>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">{tPages("home")}</BreadcrumbLink>
+              <BreadcrumbLink asChild>
+                <Link href="/">{tPages("home")}</Link>
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
           </>
         )}
 
         <BreadcrumbItem>
-          <BreadcrumbLink href="/listings">
-            {t("listing", { count: 2 })}
+          <BreadcrumbLink asChild>
+            <Link href="/listings">{t("listing", { count: 2 })}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         {category_slug && (
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/listings/categories/${category_slug}`}>
-                {tCat(category_slug)}
+              <BreadcrumbLink asChild>
+                <Link href={`/listings/categories/${category_slug}`}>
+                  {tCat(category_slug)}
+                </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
           </>
