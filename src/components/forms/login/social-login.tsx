@@ -1,13 +1,17 @@
 "use client";
 
+import AppleIcon from "@/components/reusable/icons/apple";
+import FacebookIcon from "@/components/reusable/icons/facebook";
+import GoogleIcon from "@/components/reusable/icons/google";
 import { Button } from "@/components/ui/button";
-import { Field, FieldError } from "@/components/ui/field";
+import { Field } from "@/components/ui/field";
 import { AuthError } from "@/lib/custom-errors";
 import { authClient, type SocialProvider } from "@/server/better-auth/client";
 import { KeyRound } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 const getSafeNextPath = (value: string | null) => {
   if (!value) return "/";
@@ -23,7 +27,6 @@ export default function SocialLoginForm() {
   const [submitting, setSubmitting] = useState(false);
   const [activeSocialProvider, setActiveSocialProvider] =
     useState<SocialProvider | null>(null);
-  const [authError, setAuthError] = useState<string | null>(null);
   const [passkeyPending, setPasskeyPending] = useState(false);
 
   const nextPath = useMemo(
@@ -32,7 +35,6 @@ export default function SocialLoginForm() {
   );
 
   const handleSocialSignIn = async (provider: SocialProvider) => {
-    setAuthError(null);
     setSubmitting(true);
     setActiveSocialProvider(provider);
     try {
@@ -48,15 +50,15 @@ export default function SocialLoginForm() {
         throw new AuthError("errors.generic", error.message);
       }
     } catch (err) {
+      let errorMessage = t("errors.generic");
       if (err instanceof AuthError) {
         if (err.errorSlug) {
-          setAuthError(t(err.errorSlug));
+          errorMessage = t(err.errorSlug);
         } else {
-          setAuthError(err.message);
+          errorMessage = err.message;
         }
-      } else {
-        setAuthError("errors.generic");
       }
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
       setActiveSocialProvider(null);
@@ -64,7 +66,6 @@ export default function SocialLoginForm() {
   };
 
   const handlePasskeySignIn = async () => {
-    setAuthError(null);
     setSubmitting(true);
     setPasskeyPending(true);
     try {
@@ -85,15 +86,15 @@ export default function SocialLoginForm() {
       router.push(nextPath);
       router.refresh();
     } catch (err) {
+      let errorMessage = t("errors.generic");
       if (err instanceof AuthError) {
         if (err.errorSlug) {
-          setAuthError(t(err.errorSlug));
+          errorMessage = t(err.errorSlug);
         } else {
-          setAuthError(err.message);
+          errorMessage = err.message;
         }
-      } else {
-        setAuthError(t("errors.generic"));
       }
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
       setPasskeyPending(false);
@@ -102,7 +103,6 @@ export default function SocialLoginForm() {
 
   return (
     <>
-      {authError && <FieldError>{authError}</FieldError>}
       <Field>
         <Button
           variant="outline"
@@ -113,6 +113,7 @@ export default function SocialLoginForm() {
           onClick={() => handleSocialSignIn("google")}
           className="border-[#747775] bg-white text-[#1f1f1f] dark:border-[#8e918f] dark:bg-[#131314] dark:text-[#e3e3e3]"
         >
+          <GoogleIcon />
           {activeSocialProvider === "google" ? t("loading") : t("google")}
         </Button>
       </Field>
@@ -124,7 +125,9 @@ export default function SocialLoginForm() {
             submitting || passkeyPending || activeSocialProvider !== null
           }
           onClick={() => handleSocialSignIn("apple")}
+          className={"border-[#747775] dark:border-[#8e918f]"}
         >
+          <AppleIcon />
           {activeSocialProvider === "apple" ? t("loading") : t("apple")}
         </Button>
       </Field>
@@ -138,14 +141,9 @@ export default function SocialLoginForm() {
           className="text-primary-foreground! bg-[#1877F2] hover:bg-blue-600 dark:bg-[#1877F2] dark:hover:bg-blue-800"
           onClick={() => handleSocialSignIn("facebook")}
         >
+          <FacebookIcon />
           {activeSocialProvider === "facebook" ? t("loading") : t("facebook")}
         </Button>
-        {/* <FieldDescription className="text-center">
-            {t("noAccount")}{" "}
-            <a href="#" className="underline underline-offset-4">
-              {t("signUp")}
-            </a>
-          </FieldDescription> */}
       </Field>
 
       <Field>

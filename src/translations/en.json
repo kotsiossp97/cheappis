@@ -6,7 +6,17 @@
     "search": "Search listings...",
     "search2": "Find great deals on phones, laptops, and more…",
     "language": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "account": "Account",
+    "userMenu": {
+      "listings": "Listings",
+      "myListings": "My Listings",
+      "watchlist": "Watchlist",
+      "myAccount": "My Account",
+      "profile": "Profile",
+      "statistics": "Statistics",
+      "signOut": "Sign Out"
+    }
   },
   "SiteFooter": {
     "description": "Cheappis is a free marketplace for buying and selling used tech products in Cyprus.",
@@ -45,6 +55,7 @@
   "SignInPage": {
     "title": "Login to your account",
     "subtitle": "Login or sign up using one of the following methods",
+    "welcomeBack": "Welcome back!",
     "emailLabel": "Email",
     "emailPlaceholder": "m@example.com",
     "passwordLabel": "Password",
@@ -65,13 +76,24 @@
     "loginWith": "Login with",
     "noAccount": "Don't have an account?",
     "signUp": "Sign up",
+    "back": "Back",
     "backToHome": "Back to home",
     "splashAlt": "Sign in illustration",
     "errors": {
       "generic": "Unable to sign in. Please try again.",
       "invalidCredentials": "Invalid email or password.",
+      "invalidEmail": "Invalid email address.",
       "passkeyUnavailable": "Passkeys are not supported on this browser or device.",
-      "userCancelled": "Login was cancelled by the user."
+      "userCancelled": "Login was cancelled by the user.",
+      "password": {
+        "required": "Password is required.",
+        "tooShort": "Password must be at least 8 characters long.",
+        "tooWeak": "Password is too weak. Please choose a stronger password.",
+        "missingUppercase": "Password must contain at least one uppercase letter.",
+        "missingLowercase": "Password must contain at least one lowercase letter.",
+        "missingNumber": "Password must contain at least one number.",
+        "missingSpecial": "Password must contain at least one special character."
+      }
     }
   },
   "CompleteProfilePage": {

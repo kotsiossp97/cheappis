@@ -11,6 +11,7 @@ import { ThemeProvider } from "../components/providers/theme-provider";
 import { NextIntlClientProvider } from "next-intl";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/trpc/react";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: [
@@ -85,6 +86,16 @@ export default function RootLayout({
             </ThemeProvider>
           </NextIntlClientProvider>
         </TRPCReactProvider>
+        <Toaster
+          position="top-center"
+          className="text-des"
+          toastOptions={{
+            classNames: {
+              error:
+                "!bg-red-950 !text-red-400 !border-destructive",
+            },
+          }}
+        />
       </body>
     </html>
   );

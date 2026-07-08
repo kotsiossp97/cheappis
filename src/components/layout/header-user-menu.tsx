@@ -1,6 +1,6 @@
 "use client";
 
-import { SkeletonAvatar } from "@/components/reusable/skeleton-avatar";
+import { useUserContext } from "@/components/context/user-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,43 +14,40 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getUserInitials } from "@/lib/utils";
 import { authClient } from "@/server/better-auth/client";
-import { api } from "@/trpc/react";
 import { ChartColumn, Eye, LogOut, Newspaper, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-export default function HeaderUserMenu() {
+interface HeaderUserMenuProps {
+  variant?: "default" | "mobile";
+}
+
+export default function HeaderUserMenu({
+  variant = "default",
+}: HeaderUserMenuProps) {
   const t = useTranslations("SiteHeader");
-  const { useSession, signOut } = authClient;
-  const { data: session, isPending } = useSession();
-  const { data: user, isLoading } = api.auth.me.useQuery();
+  const tMenu = useTranslations("SiteHeader.userMenu");
 
-  if (isPending) {
-    return <SkeletonAvatar />;
-  }
+  const { signOut } = authClient;
+  const { user, isPending, error } = useUserContext();
 
-  if (!session)
-    return (
-      <Link href="/sign-in">
-        <Button variant="ghost" size="sm">
+  if ((!isPending && error) || !user || isPending) {
+    return variant === "mobile" ? (
+      <>
+        <span className="text-muted-foreground text-sm">{t("signIn")}</span>
+        <Button variant="outline" size="icon" asChild disabled={isPending}>
+          <Link href="/sign-in">
+            <User className="size-4" />
+          </Link>
+        </Button>
+      </>
+    ) : (
+      <Button variant="ghost" size="sm" asChild disabled={isPending}>
+        <Link href="/sign-in">
           <User className="size-4" />
           {t("signIn")}
-        </Button>
-      </Link>
-    );
-
-  if (isLoading) {
-    return <SkeletonAvatar />;
-  }
-
-  if (!user) {
-    return (
-      <Link href="/sign-in">
-        <Button variant="ghost" size="sm">
-          <User className="size-4" />
-          {t("signIn")}
-        </Button>
-      </Link>
+        </Link>
+      </Button>
     );
   }
 
@@ -59,44 +56,57 @@ export default function HeaderUserMenu() {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="cursor-pointer" asChild>
-        <Avatar>
-          <AvatarImage src={user.image ?? undefined} alt={user.name} />
-          <AvatarFallback>
-            {getUserInitials(user.name, user?.surname)}
-          </AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Listings</DropdownMenuLabel>
-          <DropdownMenuItem>
-            <Newspaper />
-            My Listings
+    <>
+      {variant === "mobile" && (
+        <span className="text-muted-foreground text-sm">{t("account")}</span>
+      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger className="cursor-pointer">
+          <Avatar>
+            <AvatarImage src={user.image ?? undefined} alt={user.name} />
+            <AvatarFallback>
+              {getUserInitials(user.name, user?.surname)}
+            </AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="min-w-fit">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>{tMenu("listings")}</DropdownMenuLabel>
+            <Link href="/listings/user">
+              <DropdownMenuItem>
+                <Newspaper />
+                {tMenu("myListings")}
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/listings/watchlist">
+              <DropdownMenuItem>
+                <Eye />
+                {tMenu("watchlist")}
+              </DropdownMenuItem>
+            </Link>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>{tMenu("myAccount")}</DropdownMenuLabel>
+            <Link href="/account/profile">
+              <DropdownMenuItem>
+                <User /> {tMenu("profile")}
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/account/statistics">
+              <DropdownMenuItem>
+                <ChartColumn />
+                {tMenu("statistics")}
+              </DropdownMenuItem>
+            </Link>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem variant="destructive" onClick={handleLogOut}>
+            <LogOut />
+            {tMenu("signOut")}
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Eye />
-            Watchlist
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuItem>
-            <User /> Profile
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <ChartColumn />
-            Statistics
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={handleLogOut}>
-          <LogOut />
-          Log Out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }

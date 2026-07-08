@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { HeaderSearch } from "./header-search";
-import { Clock, Grid2X2, Menu, PlusCircle, Sparkles, User } from "lucide-react";
+import { Clock, Grid2X2, Menu, PlusCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import LanguageSwitch from "@/components/toggles/language-switch";
@@ -75,10 +75,7 @@ function SiteHeader() {
                   </span>
                   <LanguageSwitch />
                   <Separator orientation="vertical" className="mx-2" />
-                  <span className="text-muted-foreground text-sm">
-                    {t("signIn")}
-                  </span>
-                  <HeaderUserMenu />
+                  <HeaderUserMenu  variant="mobile"/>
                   {/* <Link href="/sign-in">
                     <Button variant="outline" size="icon">
                       <User />
