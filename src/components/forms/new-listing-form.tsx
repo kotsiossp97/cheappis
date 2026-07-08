@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus, Info, Star, Trash2, UploadCloud } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import type { Value } from "platejs";
 import { type ChangeEvent, useMemo, useRef, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 
@@ -32,11 +33,40 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
 import NewListingChecklist from "@/components/forms/new-listing-checklist";
 import LocationCombobox from "@/components/forms/location-combobox";
 import CategoryCombobox from "@/components/forms/category-combobox";
+import ListingEditor from "@/components/reusable/editor/listing-editor";
+
+const MAX_DESCRIPTION_TEXT_LENGTH = 5000;
+
+const getDefaultDescriptionValue = (): Value => [
+  {
+    type: "p",
+    children: [{ text: "" }],
+  },
+];
+
+const extractPlainTextFromSlateNode = (node: unknown): string => {
+  if (!node || typeof node !== "object") {
+    return "";
+  }
+
+  const record = node as Record<string, unknown>;
+  const ownText = typeof record.text === "string" ? record.text : "";
+  const children = Array.isArray(record.children) ? record.children : [];
+
+  return ownText + children.map(extractPlainTextFromSlateNode).join("");
+};
+
+const getPlainTextFromSlateValue = (value: unknown): string => {
+  if (!Array.isArray(value)) {
+    return "";
+  }
+
+  return value.map(extractPlainTextFromSlateNode).join("");
+};
 
 const createSchema = (t: ReturnType<typeof useTranslations>) =>
   z.object({
@@ -51,11 +81,17 @@ const createSchema = (t: ReturnType<typeof useTranslations>) =>
       .trim()
       .min(2, t("errors.locationRequired"))
       .max(120, t("errors.locationTooLong")),
-    description: z
-      .string()
-      .trim()
-      .max(5000, t("errors.descriptionTooLong"))
-      .optional(),
+    description: z.array(z.any()).superRefine((value, ctx) => {
+      if (
+        getPlainTextFromSlateValue(value).trim().length >
+        MAX_DESCRIPTION_TEXT_LENGTH
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t("errors.descriptionTooLong"),
+        });
+      }
+    }),
     price: z.string().trim().optional(),
     isFree: z.boolean(),
     priceNegotiable: z.boolean(),
@@ -65,7 +101,7 @@ type NewListingFormValues = {
   title: string;
   categorySlug: string;
   location: string;
-  description?: string;
+  description: Value;
   price?: string;
   isFree: boolean;
   priceNegotiable: boolean;
@@ -96,7 +132,7 @@ export function NewListingForm() {
       title: "",
       categorySlug: "",
       location: "",
-      description: "",
+      description: getDefaultDescriptionValue(),
       price: "",
       isFree: false,
       priceNegotiable: false,
@@ -209,12 +245,17 @@ export function NewListingForm() {
     setUploadError(null);
     setUploadingImages(true);
 
+    const descriptionText = getPlainTextFromSlateValue(
+      values.description,
+    ).trim();
+
     try {
       const listing = await createListingMutation.mutateAsync({
         title: values.title,
         categorySlug: values.categorySlug,
         location: values.location,
-        description: values.description?.trim() || undefined,
+        description:
+          descriptionText.length > 0 ? values.description : undefined,
         price: values.isFree ? null : parsedPrice,
         isFree: values.isFree,
         priceNegotiable: values.priceNegotiable,
@@ -233,8 +274,7 @@ export function NewListingForm() {
       });
 
       const uploadData = (await uploadResponse.json()) as
-        | { urls?: string[]; errorKey?: string }
-        | undefined;
+        { urls?: string[]; errorKey?: string } | undefined;
 
       if (!uploadResponse.ok || !uploadData?.urls) {
         setUploadError(getUploadErrorMessage(uploadData?.errorKey));
@@ -345,17 +385,25 @@ export function NewListingForm() {
                 </Field>
               </div>
 
-              <Field>
-                <FieldLabel htmlFor="description">
-                  {t("fields.description.label")}
-                </FieldLabel>
-                <Textarea
-                  id="description"
-                  rows={7}
-                  placeholder={t("fields.description.placeholder")}
-                  {...form.register("description")}
-                />
-              </Field>
+              <Controller
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel htmlFor="description">
+                      {t("fields.description.label")}
+                    </FieldLabel>
+                    <div>
+                      <ListingEditor
+                        initialValue={field.value}
+                        onChange={(value) => field.onChange(value)}
+                        placeholder={t("fields.description.placeholder")}
+                      />
+                    </div>
+                    <FieldError errors={[form.formState.errors.description]} />
+                  </Field>
+                )}
+              />
             </FieldGroup>
           </CardContent>
         </Card>

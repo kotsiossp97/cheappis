@@ -55,7 +55,7 @@ export default function ListingUserCard({ listing }: ListingUserCardProps) {
                 <span className="text-muted-foreground text-xs">
                   {t("memberSince", {
                     relativeTime: format.relativeTime(
-                      new Date(listing.createdAt),
+                      new Date(listing.user.createdAt),
                       now,
                     ),
                   })}

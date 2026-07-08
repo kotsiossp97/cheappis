@@ -24,11 +24,12 @@ export default async function ListingPage({
   }
 
   listing = JSON.parse(JSON.stringify(listing)) as typeof listing;
-  const similarListings = await api.listing.getSimilar({
+  let similarListings = await api.listing.getSimilar({
     categorySlug: category_slug,
     excludeSlug: listing.slug,
     limit: 6,
   });
+  similarListings = JSON.parse(JSON.stringify(similarListings)) as typeof similarListings;
 
   return (
     <main className="flex flex-1 flex-col">

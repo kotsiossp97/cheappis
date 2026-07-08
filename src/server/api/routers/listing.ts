@@ -9,6 +9,7 @@ import {
 import { FREE_PLAN_MAX_IMAGES } from "@/lib/listing-image-constraints";
 
 const listingSortValues = ["recent", "priceAsc", "priceDesc"] as const;
+const MAX_DESCRIPTION_TEXT_LENGTH = 5000;
 
 const listInputSchema = z.object({
   q: z.string().trim().max(120).optional(),
@@ -21,9 +22,38 @@ const listInputSchema = z.object({
   pageSize: z.number().int().min(1).max(48).default(24),
 });
 
+const slateDescriptionSchema = z.array(z.any()).superRefine((value, ctx) => {
+  if (getPlainTextFromSlateDescription(value).length > MAX_DESCRIPTION_TEXT_LENGTH) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Description must be at most 5000 characters.",
+    });
+  }
+});
+
+const extractPlainTextFromSlateNode = (node: unknown): string => {
+  if (!node || typeof node !== "object") {
+    return "";
+  }
+
+  const record = node as Record<string, unknown>;
+  const ownText = typeof record.text === "string" ? record.text : "";
+  const children = Array.isArray(record.children) ? record.children : [];
+
+  return ownText + children.map(extractPlainTextFromSlateNode).join("");
+};
+
+const getPlainTextFromSlateDescription = (value: unknown): string => {
+  if (!Array.isArray(value)) {
+    return "";
+  }
+
+  return value.map(extractPlainTextFromSlateNode).join(" ").trim();
+};
+
 const createListingSchema = z.object({
   title: z.string().trim().min(5).max(120),
-  description: z.string().trim().max(5000).optional(),
+  description: slateDescriptionSchema.optional(),
   categorySlug: z.string().trim().min(1),
   location: z.string().trim().min(2).max(120),
   price: z.number().int().min(0).nullable().optional(),
@@ -49,7 +79,7 @@ const toListingDto = (listing: {
   id: string;
   slug: string;
   title: string;
-  description: string | null;
+  description: unknown;
   price: number | null;
   isFree: boolean;
   priceNegotiable: boolean;
@@ -63,6 +93,7 @@ const toListingDto = (listing: {
   slug: listing.slug,
   title: listing.title,
   description: listing.description ?? undefined,
+  descriptionText: getPlainTextFromSlateDescription(listing.description),
   price: listing.price,
   isFree: listing.isFree,
   priceNegotiable: listing.priceNegotiable,
@@ -146,7 +177,7 @@ export const listingRouter = createTRPCRouter({
         select: listingSelect,
       });
 
-      return rows.map(toListingDto);
+      return rows;
     }),
 
   getRecent: publicProcedure
@@ -182,15 +213,10 @@ export const listingRouter = createTRPCRouter({
         : {}),
       ...(input.q
         ? {
-            OR: [
-              { title: { contains: input.q, mode: "insensitive" as const } },
-              {
-                description: {
-                  contains: input.q,
-                  mode: "insensitive" as const,
-                },
-              },
-            ],
+            title: {
+              contains: input.q,
+              mode: "insensitive" as const,
+            },
           }
         : {}),
       ...(input.minPrice !== undefined || input.maxPrice !== undefined
@@ -224,7 +250,7 @@ export const listingRouter = createTRPCRouter({
     ]);
 
     return {
-      items: items.map(toListingDto),
+      items,
       page: input.page,
       pageSize: input.pageSize,
       total,
@@ -379,7 +405,7 @@ export const listingRouter = createTRPCRouter({
         data: {
           slug,
           title: input.title,
-          description: input.description,
+          description: input.description ?? undefined,
           categoryId: category.id,
           location: input.location,
           price: input.isFree ? null : (input.price ?? null),

@@ -38,7 +38,6 @@ export type ListingMinAggregateOutputType = {
   id: string | null
   slug: string | null
   title: string | null
-  description: string | null
   price: number | null
   isFree: boolean | null
   priceNegotiable: boolean | null
@@ -55,7 +54,6 @@ export type ListingMaxAggregateOutputType = {
   id: string | null
   slug: string | null
   title: string | null
-  description: string | null
   price: number | null
   isFree: boolean | null
   priceNegotiable: boolean | null
@@ -99,7 +97,6 @@ export type ListingMinAggregateInputType = {
   id?: true
   slug?: true
   title?: true
-  description?: true
   price?: true
   isFree?: true
   priceNegotiable?: true
@@ -116,7 +113,6 @@ export type ListingMaxAggregateInputType = {
   id?: true
   slug?: true
   title?: true
-  description?: true
   price?: true
   isFree?: true
   priceNegotiable?: true
@@ -237,7 +233,7 @@ export type ListingGroupByOutputType = {
   id: string
   slug: string
   title: string
-  description: string | null
+  description: runtime.JsonValue | null
   price: number | null
   isFree: boolean
   priceNegotiable: boolean
@@ -277,7 +273,7 @@ export type ListingWhereInput = {
   id?: Prisma.StringFilter<"Listing"> | string
   slug?: Prisma.StringFilter<"Listing"> | string
   title?: Prisma.StringFilter<"Listing"> | string
-  description?: Prisma.StringNullableFilter<"Listing"> | string | null
+  description?: Prisma.JsonNullableFilter<"Listing">
   price?: Prisma.IntNullableFilter<"Listing"> | number | null
   isFree?: Prisma.BoolFilter<"Listing"> | boolean
   priceNegotiable?: Prisma.BoolFilter<"Listing"> | boolean
@@ -320,7 +316,7 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ListingWhereInput[]
   NOT?: Prisma.ListingWhereInput | Prisma.ListingWhereInput[]
   title?: Prisma.StringFilter<"Listing"> | string
-  description?: Prisma.StringNullableFilter<"Listing"> | string | null
+  description?: Prisma.JsonNullableFilter<"Listing">
   price?: Prisma.IntNullableFilter<"Listing"> | number | null
   isFree?: Prisma.BoolFilter<"Listing"> | boolean
   priceNegotiable?: Prisma.BoolFilter<"Listing"> | boolean
@@ -365,7 +361,7 @@ export type ListingScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Listing"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Listing"> | string
   title?: Prisma.StringWithAggregatesFilter<"Listing"> | string
-  description?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
+  description?: Prisma.JsonNullableWithAggregatesFilter<"Listing">
   price?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
   isFree?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   priceNegotiable?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
@@ -382,7 +378,7 @@ export type ListingCreateInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -400,7 +396,7 @@ export type ListingUncheckedCreateInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -418,7 +414,7 @@ export type ListingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -436,7 +432,7 @@ export type ListingUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -454,7 +450,7 @@ export type ListingCreateManyInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -471,7 +467,7 @@ export type ListingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -486,7 +482,7 @@ export type ListingUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -534,7 +530,6 @@ export type ListingMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   isFree?: Prisma.SortOrder
   priceNegotiable?: Prisma.SortOrder
@@ -551,7 +546,6 @@ export type ListingMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   isFree?: Prisma.SortOrder
   priceNegotiable?: Prisma.SortOrder
@@ -687,7 +681,7 @@ export type ListingCreateWithoutUserInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -704,7 +698,7 @@ export type ListingUncheckedCreateWithoutUserInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -750,7 +744,7 @@ export type ListingScalarWhereInput = {
   id?: Prisma.StringFilter<"Listing"> | string
   slug?: Prisma.StringFilter<"Listing"> | string
   title?: Prisma.StringFilter<"Listing"> | string
-  description?: Prisma.StringNullableFilter<"Listing"> | string | null
+  description?: Prisma.JsonNullableFilter<"Listing">
   price?: Prisma.IntNullableFilter<"Listing"> | number | null
   isFree?: Prisma.BoolFilter<"Listing"> | boolean
   priceNegotiable?: Prisma.BoolFilter<"Listing"> | boolean
@@ -767,7 +761,7 @@ export type ListingCreateWithoutCategoryInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -784,7 +778,7 @@ export type ListingUncheckedCreateWithoutCategoryInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -827,7 +821,7 @@ export type ListingCreateWithoutImagesInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -844,7 +838,7 @@ export type ListingUncheckedCreateWithoutImagesInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -877,7 +871,7 @@ export type ListingUpdateWithoutImagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -894,7 +888,7 @@ export type ListingUncheckedUpdateWithoutImagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -911,7 +905,7 @@ export type ListingCreateManyUserInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -927,7 +921,7 @@ export type ListingUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -944,7 +938,7 @@ export type ListingUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -961,7 +955,7 @@ export type ListingUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -977,7 +971,7 @@ export type ListingCreateManyCategoryInput = {
   id?: string
   slug: string
   title: string
-  description?: string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: number | null
   isFree?: boolean
   priceNegotiable?: boolean
@@ -993,7 +987,7 @@ export type ListingUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1010,7 +1004,7 @@ export type ListingUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1027,7 +1021,7 @@ export type ListingUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   price?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1173,7 +1167,7 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     slug: string
     title: string
-    description: string | null
+    description: runtime.JsonValue | null
     price: number | null
     isFree: boolean
     priceNegotiable: boolean
@@ -1613,7 +1607,7 @@ export interface ListingFieldRefs {
   readonly id: Prisma.FieldRef<"Listing", 'String'>
   readonly slug: Prisma.FieldRef<"Listing", 'String'>
   readonly title: Prisma.FieldRef<"Listing", 'String'>
-  readonly description: Prisma.FieldRef<"Listing", 'String'>
+  readonly description: Prisma.FieldRef<"Listing", 'Json'>
   readonly price: Prisma.FieldRef<"Listing", 'Int'>
   readonly isFree: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly priceNegotiable: Prisma.FieldRef<"Listing", 'Boolean'>

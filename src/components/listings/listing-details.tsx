@@ -1,6 +1,9 @@
 "use client";
 
+import type { Value } from "platejs";
+
 import ListingUserCard from "@/components/listings/listing-user-details";
+import ListingEditor from "@/components/reusable/editor/listing-editor";
 import TooltipWrapper from "@/components/reusable/tooltip-wrapper";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -19,6 +22,10 @@ export default function ListingDetails({ listing }: ListingDetailsProps) {
   const tDistrict = useTranslations("LocationCombobox.districts");
 
   const now = new Date();
+
+  const descriptionValue: string | Value = Array.isArray(listing.description)
+    ? (listing.description as Value)
+    : t("descriptionNotAvailable");
 
   const formatPrice = (price?: number | null) => {
     if (listing.isFree) {
@@ -68,13 +75,7 @@ export default function ListingDetails({ listing }: ListingDetailsProps) {
       </div>
       <Separator className="my-5" />
       <h3 className="mb-2 text-lg font-semibold">{t("description")}</h3>
-      {listing?.description || listing?.description === "" ? (
-        <p className="mt-4">{listing.description}</p>
-      ) : (
-        <p className="text-muted-foreground mt-4 text-center text-sm">
-          {t("descriptionNotAvailable")}
-        </p>
-      )}
+      <ListingEditor initialValue={descriptionValue} readOnly={true} />
 
       <Separator className="my-5" />
 

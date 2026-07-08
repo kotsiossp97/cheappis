@@ -1,12 +1,27 @@
 import { Badge } from "@/components/ui/badge";
-import { type Listing } from "@/lib/types/listing";
 import { MapPin } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
+export type ListingCardListing = {
+  slug: string;
+  title: string;
+  price: number | null;
+  isFree: boolean;
+  location: string;
+  createdAt: Date | string;
+  featured: boolean;
+  category: {
+    slug: string;
+  };
+  images: Array<{
+    url: string;
+  }>;
+};
+
 interface ListingCardProps {
-  listing: Listing;
+  listing: ListingCardListing;
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {

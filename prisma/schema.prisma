@@ -98,7 +98,7 @@ model Listing {
   id              String         @id @default(cuid())
   slug            String         @unique
   title           String
-  description     String?
+  description     Json?
   price           Int?
   isFree          Boolean        @default(false)
   priceNegotiable Boolean        @default(false)

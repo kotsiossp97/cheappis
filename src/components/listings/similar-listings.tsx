@@ -1,11 +1,12 @@
 "use client";
 
-import ListingCard from "@/components/home/listing-card";
-import { type Listing } from "@/lib/types/listing";
+import ListingCard, {
+  type ListingCardListing,
+} from "@/components/home/listing-card";
 import { useTranslations } from "next-intl";
 
 interface SimilarListingsProps {
-  listings: Listing[];
+  listings: ListingCardListing[];
 }
 
 export default function SimilarListings({ listings }: SimilarListingsProps) {

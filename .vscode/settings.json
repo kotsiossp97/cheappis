@@ -1,3 +1,11 @@
 {
-  "js/ts.preferences.importModuleSpecifier": "non-relative"
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "chat.mcp.serverSampling": {
+    "cheappis/.vscode/mcp.json: plate": {
+      "allowedModels": [
+        "copilotcli/auto",
+        "copilot/auto"
+      ]
+    }
+  }
 }
